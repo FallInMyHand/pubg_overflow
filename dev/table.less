@@ -1,0 +1,52 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.info_table {
+  background-color: #131313;
+  font-family: 'Titillium Web', sans-serif;
+  color: #b6b6b6;
+  font-weight: 100;
+  padding: 10px;
+
+  &-playerinfo {
+    &-name {
+      color: #FFF;
+      font-size: 2em;
+    }
+  }
+
+  &-grid {
+    display: table;
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+    
+    .row {
+      display: table-row;
+      transition: 0.3s;
+
+      &.header {
+        font-weight: bold;
+      }
+      &:not(.header) {
+        &:nth-child(2n) {
+          background-color: rgba(255,255,255,.1);
+        }
+        &:hover {
+          background-color: rgba(255,255,255,.2);
+        }
+      }
+
+      .cell {
+        display: table-cell;
+        border: 1px solid #888;
+        padding: 3px 10px;
+        &:first-of-type {
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}

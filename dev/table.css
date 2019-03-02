@@ -1,0 +1,42 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+.info_table {
+  background-color: #131313;
+  font-family: 'Titillium Web', sans-serif;
+  color: #b6b6b6;
+  font-weight: 100;
+  padding: 10px;
+}
+.info_table-playerinfo-name {
+  color: #FFF;
+  font-size: 2em;
+}
+.info_table-grid {
+  display: table;
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+}
+.info_table-grid .row {
+  display: table-row;
+  transition: 0.3s;
+}
+.info_table-grid .row.header {
+  font-weight: bold;
+}
+.info_table-grid .row:not(.header):nth-child(2n) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.info_table-grid .row:not(.header):hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.info_table-grid .row .cell {
+  display: table-cell;
+  border: 1px solid #888;
+  padding: 3px 10px;
+}
+.info_table-grid .row .cell:first-of-type {
+  font-weight: bold;
+}
