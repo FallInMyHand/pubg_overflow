@@ -3,6 +3,14 @@
   margin: 0;
 }
 
+:focus {
+  outline: none;
+}
+ul {
+  list-style: none;
+  margin-left: 5px;
+}
+
 .info_table {
   background-color: #131313;
   font-family: 'Titillium Web', sans-serif;
@@ -11,9 +19,25 @@
   padding: 10px;
 
   &-playerinfo {
+    display: flex;
+    justify-content: space-between;
+
     &-name {
       color: #FFF;
       font-size: 2em;
+    }
+    &-search {
+      display: flex;
+      align-items: center;
+      label {
+        input {
+          background-color: black;
+          border: 1px solid #888;
+          padding: 3px;
+          color: #888;
+          border-radius: 3px;
+        }
+      }
     }
   }
 
@@ -43,8 +67,44 @@
         display: table-cell;
         border: 1px solid #888;
         padding: 3px 10px;
+        position: relative;
+        cursor: pointer;
+
         &:first-of-type {
           font-weight: bold;
+        }
+
+        .additional_info {
+          display: none;
+          position: absolute;
+          width: 96%;
+          top: 100%;
+          left: -1px;
+          font-size: 12px;
+          border: 1px solid #888;
+          background-color: #161616;
+          padding: 2%;
+          z-index: 100;
+          
+          &::before {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -6px;
+            left: 10px;
+            background-color: #161616;
+            transform: rotate(45deg);
+            border-top: 1px solid #888;
+            border-left: 1px solid #888;
+          }
+        }
+
+        &:focus {
+          .additional_info {
+            display: block;
+          }
         }
       }
     }
