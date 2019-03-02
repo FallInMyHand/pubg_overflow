@@ -1,0 +1,20 @@
+{
+    "username": "FallInMyHand",
+    "favorite": ["Hailrake"],
+    "score": [
+        {
+            "name": "Hailrake",
+            "kills": 5,
+            "killedBy": 3,
+            "killStreak": 2,
+            "deathStreak": 0
+        },
+        {
+            "name": "Shroud",
+            "kills": 0,
+            "killedBy": 3,
+            "killStreak": 0,
+            "deathStreak": 3
+        }
+    ]
+}
