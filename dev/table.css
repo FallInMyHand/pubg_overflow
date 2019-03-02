@@ -1,6 +1,7 @@
 * {
   padding: 0;
   margin: 0;
+  transition: 0.3s;
 }
 :focus {
   outline: none;
@@ -9,86 +10,115 @@ ul {
   list-style: none;
   margin-left: 5px;
 }
-.info_table {
-  background-color: #131313;
+.app {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  background: #4f0a60;
+  background: linear-gradient(0deg, #4f0a60 0%, #345374 100%);
+  font-family: 'Titillium Web', sans-serif;
+  height: 100%;
+}
+.app .sidebar {
+  width: 200px;
+  padding: 20px;
+}
+.app .favorite {
+  width: 200px;
+  height: 200px;
+  border-radius: 15px;
+  border-top-right-radius: 0;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  margin: 0 auto;
+  padding: 5px;
+  color: #b6b6b6;
+  text-align: center;
+  position: relative;
+}
+.app .favorite-name {
+  color: #FFF;
+  font-size: 1.3em;
+  margin-bottom: 10px;
+}
+.app .info_table {
   font-family: 'Titillium Web', sans-serif;
   color: #b6b6b6;
   font-weight: 100;
   padding: 10px;
+  width: auto;
 }
-.info_table-playerinfo {
+.app .info_table-playerinfo {
   display: flex;
   justify-content: space-between;
 }
-.info_table-playerinfo-name {
+.app .info_table-playerinfo-name {
   color: #FFF;
+  text-shadow: 0 1px 3px #000;
   font-size: 2em;
 }
-.info_table-playerinfo-search {
+.app .info_table-playerinfo-search {
   display: flex;
   align-items: center;
 }
-.info_table-playerinfo-search label input {
+.app .info_table-playerinfo-search label input {
   background-color: black;
   border: 1px solid #888;
   padding: 3px;
   color: #888;
   border-radius: 3px;
 }
-.info_table-grid {
+.app .info_table-grid {
   display: table;
   border-collapse: collapse;
   width: 100%;
   table-layout: fixed;
 }
-.info_table-grid .row {
+.app .info_table-grid .row {
   display: table-row;
   transition: 0.3s;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
-.info_table-grid .row.header {
+.app .info_table-grid .row.header {
   font-weight: bold;
+  color: #111;
 }
-.info_table-grid .row:not(.header):nth-child(2n) {
-  background-color: rgba(255, 255, 255, 0.1);
+.app .info_table-grid .row.header .cell:hover {
+  letter-spacing: 0 !important;
 }
-.info_table-grid .row:not(.header):hover {
-  background-color: rgba(255, 255, 255, 0.2);
+.app .info_table-grid .row:not(.header):hover {
+  color: #FFF;
 }
-.info_table-grid .row .cell {
+.app .info_table-grid .row .cell {
   display: table-cell;
-  border: 1px solid #888;
-  padding: 3px 10px;
+  padding: 10px ;
   position: relative;
+  text-align: center;
+  vertical-align: bottom;
   cursor: pointer;
 }
-.info_table-grid .row .cell:first-of-type {
+.app .info_table-grid .row .cell:first-of-type {
   font-weight: bold;
+  text-align: left;
 }
-.info_table-grid .row .cell .additional_info {
+.app .info_table-grid .row .cell:first-of-type:hover {
+  letter-spacing: 3px;
+}
+.app .info_table-grid .row .cell .additional_info {
   display: none;
   position: absolute;
-  width: 96%;
-  top: 100%;
+  width: 80%;
+  top: 80%;
   left: -1px;
   font-size: 12px;
-  border: 1px solid #888;
-  background-color: #161616;
-  padding: 2%;
+  background-color: #FFF;
+  border-radius: 15px;
+  border-top-left-radius: 0;
+  margin-left: 10px;
+  padding: 5% 10%;
   z-index: 100;
+  letter-spacing: 0 !important;
+  color: #000 !important;
 }
-.info_table-grid .row .cell .additional_info::before {
-  content: "";
-  display: block;
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  top: -6px;
-  left: 10px;
-  background-color: #161616;
-  transform: rotate(45deg);
-  border-top: 1px solid #888;
-  border-left: 1px solid #888;
-}
-.info_table-grid .row .cell:focus .additional_info {
+.app .info_table-grid .row .cell:focus .additional_info {
   display: block;
 }
