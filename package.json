@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node start.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/FallInMyHand/pubg_overflow/issues"
   },
-  "homepage": "https://github.com/FallInMyHand/pubg_overflow#readme"
+  "homepage": "https://github.com/FallInMyHand/pubg_overflow#readme",
+  "devDependencies": {
+    "express": "^4.16.4",
+    "gulp": "^4.0.0",
+    "gulp-less": "^4.0.1"
+  }
 }

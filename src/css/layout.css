@@ -1,0 +1,11 @@
+#app {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+}
+#app .row {
+  display: flex;
+}
+#app .row .column {
+  flex: 50%;
+}

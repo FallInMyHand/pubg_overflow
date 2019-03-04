@@ -1,1 +1,1 @@
-# Overwolf demo-app
+# App for Overwolf

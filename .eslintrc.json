@@ -1,0 +1,18 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": false
+        }
+    },
+    "rules": {
+        "no-use-before-define": [
+            "error", {
+                "functions": false,
+                "classes": true
+            }
+        ],
+        "dot-notation": "off"
+    }
+}
