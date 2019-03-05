@@ -7,6 +7,10 @@ requirejs.config({
 
 requirejs(['app/controller/background'], function(controller) {
     controller.init();
+
+    overwolf.windows.obtainDeclaredWindow('overlay', function() {
+        overwolf.windows.restore('overlay')
+    });
 });
 
 
