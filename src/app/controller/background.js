@@ -3,8 +3,9 @@ define(function() {
 
     const FEATURE_PHASE = 'phase';
     const FEATURE_ROSTER = 'roster';
+    const FEATUR_KILL = 'kill';
 
-    const REQUIRED_FEATURES = ['me', FEATURE_PHASE, 'map', FEATURE_ROSTER, 'kill', 'match'];
+    const REQUIRED_FEATURES = ['me', FEATURE_PHASE, 'map', FEATURE_ROSTER, FEATUR_KILL, 'match'];
 
     const REGISTER_RETRY_TIMEOUT = 10000;
 
@@ -46,17 +47,20 @@ define(function() {
                     let match_info = info.info.match_info;
                     Object.keys(match_info).forEach((k) => {
                         if (match_info[k] === '{}') {
-                            console.log('empty exit');
                             if (_roster[k]) {
                                 removePlayer(_roster[k]);
+                                delete _roster[k];
                             }
                         } else {
                             let o = JSON.parse(match_info[k]);
                             if (!o.out) {
-                                addPlayer(o.name);
-                                _roster[k] = o.name;
+                                addPlayer(o.player);
+                                _roster[k] = o.player;
                             } else {
-                                removePlayer(o.name);
+                                removePlayer(o.player);
+                                if (_roster[k]) {
+                                    delete _roster[k];
+                                }
                             }
                         }
                     });
@@ -69,6 +73,8 @@ define(function() {
                             rabbit: players.rabbit.length
                         });
                     }
+
+                } else if (info.feature === FEATUR_KILL) {
 
                 }
             })
