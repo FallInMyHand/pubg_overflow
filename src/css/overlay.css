@@ -18,8 +18,8 @@
 .toolbar .item[data-type="dominated"] .icon {
   background-image: url(../images/icon/dominated.png);
 }
-.toolbar .item[data-type="default"] .icon {
-  background-image: url(../images/icon/default.png);
+.toolbar .item[data-type="neutral"] .icon {
+  background-image: url(../images/icon/neutral.png);
 }
 .toolbar .item[data-type="rabbit"] .icon {
   background-image: url(../images/icon/rabbit.png);

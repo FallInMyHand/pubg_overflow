@@ -10,6 +10,9 @@
 		"icon_gray":"cat.png",
 		"description":""
 	},
+	"permissions": [
+		"FileSystem"
+	],
 	"data": {
 		"game_events": [10906],
 		"start_window":"background",
@@ -53,6 +56,12 @@
 				"keep_window_location": true,
 				"in_game_only": true
 			}
+		},
+		"extra-objects": {
+			"simple-io-plugin": {
+				"file": "plugins/simple-io-plugin.dll",
+				"class": "overwolf.plugins.SimpleIOPlugin"
+			  }
 		},
 		"externally_connectable": {
 			"matches": [

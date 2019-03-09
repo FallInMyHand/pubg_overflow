@@ -26,6 +26,27 @@ define(function() {
 
     function init() {
         if (overwolf) {
+            var _plugin = null;
+            overwolf.extensions.current.getExtraObject("simple-io-plugin", (result) => {
+                if (result.status === "success") {
+                    _plugin = result.object;
+                }
+
+                console.log(result, _plugin);
+            });
+
+            overwolf.io.writeFileContents('./qwertyuiop.json', 'abcada', 'UTF8', false, (result) => {
+
+            });
+            overwolf.io.fileExists('/src/data/config.json', (result) => {
+                console.log('file - exist', result);
+                if (!result.found) {
+                    require(['app/controller/installation'], (installation) => {
+                        installation.install();
+                    });
+                }
+            });
+
             overwolf.windows.obtainDeclaredWindow('overlay', function(event) {
                 overwolf.windows.restore('overlay', function(result) {
                     if (result.status === 'success') {
