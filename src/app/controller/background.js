@@ -30,13 +30,38 @@ define(function() {
             overwolf.extensions.current.getExtraObject("simple-io-plugin", (result) => {
                 if (result.status === "success") {
                     _plugin = result.object;
+
+                    console.log(_plugin)
+
+                    var filename = "tesing.app";
+                    var content = "1234\n56768";
+                    _plugin.writeLocalAppDataFile( filename, content, function(status, message)
+                    {
+                        console.log('write', arguments);
+
+                        _plugin.listDirectory(_plugin.PROGRAMFILES, function(status, result) {
+                            if(status === true) {
+                              directory = JSON.parse(result);
+                              directory.map(function(content) {
+                                if(content.type == "file") {
+                                  console.log(content.name);
+                                } else {
+                                  console.log(result);
+                                }
+                              });
+                            }
+                          });
+
+                    });
                 }
 
                 console.log(result, _plugin);
+
+
             });
 
-            overwolf.io.writeFileContents('./qwertyuiop.json', 'abcada', 'UTF8', false, (result) => {
-
+            overwolf.io.writeFileContents('C:/Users/FallInMyHand/AppData/Roaming/overwolf/qwertyuiop.json', 'abcada', 'UTF8', false, (result) => {
+                console.log('write file', result);
             });
             overwolf.io.fileExists('/src/data/config.json', (result) => {
                 console.log('file - exist', result);
