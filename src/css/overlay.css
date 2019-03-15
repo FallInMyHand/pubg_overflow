@@ -19,7 +19,7 @@
   background-image: url(../images/icon/guy_bad.svg);
 }
 .toolbar .item[data-type="neutral"] .icon {
-  background-image: url(../images/icon/guy_normal.svg);
+  background-image: url(../images/icon/guy_normal2.svg);
 }
 .toolbar .item[data-type="rabbit"] .icon {
   background-image: url(../images/icon/guy_rabbit.svg);
