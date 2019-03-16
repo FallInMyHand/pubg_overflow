@@ -9,7 +9,9 @@
   display: inline-block;
   width: 32px;
   height: 32px;
-  background-size: 32px 32px;
+  margin-left: 3px;
+  background-size: 26px;
+  background-repeat: no-repeat;
   vertical-align: middle;
 }
 .toolbar .item[data-type="unknown"] .icon {
