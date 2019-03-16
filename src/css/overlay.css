@@ -1,8 +1,6 @@
 .toolbar .item {
   display: inline-block;
-  margin-left: 3px;
-  background-size: 26px;
-  background-repeat: no-repeat;
+  font-size: 36px;
   font-family: 'Teko', sans-serif;
   color: rgba(255, 255, 255, 0.8);
   line-height: 32px;
@@ -11,7 +9,9 @@
   display: inline-block;
   width: 32px;
   height: 32px;
-  background-size: 32px 32px;
+  background-size: 25.92px;
+  background-repeat: no-repeat;
+  margin-left: 3px;
   vertical-align: middle;
 }
 .toolbar .item[data-type="unknown"] .icon {
