@@ -5,13 +5,13 @@
         <title>overlay</title>
         <script data-main="../../app/start_overlay" src="../../require.js"></script>
         <link rel="stylesheet" type="text/css" href="../../css/overlay.css">
-        <link rel="stylesheet" type="text/css" href="../../css/dev.css">
         <link href="https://fonts.googleapis.com/css?family=Teko:500" rel="stylesheet">
         <script>
             if (document.location.hostname === 'localhost') {
                 let head = document.querySelector('head');
                 let style = document.createElement('style');
                 style.type = 'text/css';
+                style.href = '../../css/dev.css';
                 head.appendChild(style);
             }
         </script>

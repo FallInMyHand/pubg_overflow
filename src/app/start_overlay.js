@@ -5,6 +5,7 @@ requirejs.config({
     }
 });
 
-requirejs(['app/controller/overlay'], function(controller) {
-    controller.init();
+requirejs(['app/utils/events', 'app/controller/overlay'], function(EventsEmitter, controller) {
+    window.eventBus = new EventsEmitter('overlay');
+    controller.init(window.eventBus);
 });

@@ -1,4 +1,4 @@
-define(function() {
+define(['app/services/filesystem'], function(filesystem) {
     const items = ['unknown', 'dominated', 'neutral', 'rabbit'];
 
     const FEATURE_PHASE = 'phase';
@@ -8,8 +8,6 @@ define(function() {
     const REQUIRED_FEATURES = ['me', FEATURE_PHASE, 'map', FEATURE_ROSTER, FEATUR_KILL, 'match'];
 
     const REGISTER_RETRY_TIMEOUT = 10000;
-
-    let overlay_window;
 
     let players = {
         unknown: [],
@@ -24,59 +22,46 @@ define(function() {
         init
     };
 
-    function init() {
+    function init(events) {
         if (overwolf) {
-            var _plugin = null;
-            overwolf.extensions.current.getExtraObject("simple-io-plugin", (result) => {
-                if (result.status === "success") {
-                    _plugin = result.object;
+            filesystem.exists(`${filesystem.APP_DATA}/config.json`).then(() => {
+                filesystem.read(`${filesystem.APP_DATA}/config.json`).then((content) => {
+                    let userConfig = JSON.parse(content);
+                    if (!userConfig.pubg.accountId) {
+                        require(['app/services/pubg'], (pubgapi) => {
+                            (async function() {
+                                let accountId = await pubgapi.getAccountId(userConfig.username);
+                                console.log('account id', accountId)
+                                userConfig.pubg.accountId = accountId;
+                                filesystem.write(`${filesystem.APP_DATA}/config.json`, JSON.stringify(userConfig));
+                            }) ();
 
-                    console.log(_plugin)
+                        });
+                    } else {
+                        require(['app/services/pubg'], (pubgapi) => {
+                            (async function() {
+                                let matches_ids = await pubgapi.test();
+                                if (matches_ids.length > 0) {
+                                    let asset = await pubgapi.getMatchAsset(matches_ids[0]);
+                                    let telemetry = await pubgapi.getTelemetry(asset.attributes.URL);
 
-                    var filename = "tesing.app";
-                    var content = "1234\n56768";
-                    _plugin.writeLocalAppDataFile( filename, content, function(status, message)
-                    {
-                        console.log('write', arguments);
-
-                        _plugin.listDirectory(_plugin.PROGRAMFILES, function(status, result) {
-                            if(status === true) {
-                              directory = JSON.parse(result);
-                              directory.map(function(content) {
-                                if(content.type == "file") {
-                                  console.log(content.name);
-                                } else {
-                                  console.log(result);
+                                    console.log(telemetry.filter(t => t._T === 'LogPlayerKill'));
                                 }
-                              });
-                            }
-                          });
-
-                    });
-                }
-
-                console.log(result, _plugin);
-
-
-            });
-
-            overwolf.io.writeFileContents('C:/Users/FallInMyHand/AppData/Roaming/overwolf/qwertyuiop.json', 'abcada', 'UTF8', false, (result) => {
-                console.log('write file', result);
-            });
-            overwolf.io.fileExists('/src/data/config.json', (result) => {
-                console.log('file - exist', result);
-                if (!result.found) {
-                    require(['app/controller/installation'], (installation) => {
-                        installation.install();
-                    });
-                }
+                            }) ();
+                        });
+                    }
+                });
+            }, () => {
+                console.log('config not exist');
+                require(['app/controller/installation'], (installation) => {
+                    installation.install();
+                });
             });
 
             overwolf.windows.obtainDeclaredWindow('overlay', function(event) {
                 overwolf.windows.restore('overlay', function(result) {
                     if (result.status === 'success') {
                         overwolf.windows.getOpenWindows((obj) => {
-                            overlay_window = obj.overlay;
                             overwolf.windows.hide('overlay');
                         });
                     }
@@ -110,16 +95,12 @@ define(function() {
                             }
                         }
                     });
-
-                    if (overlay_window) {
-                        overlay_window.update({
-                            unknown: players.unknown.length,
-                            dominated: players.dominated.length,
-                            neutral: players.neutral.length,
-                            rabbit: players.rabbit.length
-                        });
-                    }
-
+                    events.trigger('updatedRoster', {
+                        unknown: players.unknown.length,
+                        dominated: players.dominated.length,
+                        neutral: players.neutral.length,
+                        rabbit: players.rabbit.length
+                    });
                 } else if (info.feature === FEATUR_KILL) {
 
                 }
@@ -154,6 +135,8 @@ define(function() {
                     rabbit: []
                 };
                 _roster = {};
+            } else if (event.name === 'damage_dealt') {
+
             } else {
                 console.log('another - event', event);
             }

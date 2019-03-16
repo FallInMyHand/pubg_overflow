@@ -1,0 +1,6 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$.getJSON('fc51f0d0-47d6-11e9-b8f9-0a586462ef10-telemetry.json', function(result) {
+    console.log(result.filter(d => d.victim));
+})
+</script>

@@ -1,11 +1,19 @@
-define(function() {
+define(['app/services/filesystem', 'json!config/defaults/config.json'], function(filesystem, def_config) {
     return {
         install
     };
 
     function install() {
-        overwolf.io.readFileContents('/src/manifest.json', 'UTF8', (result) => { // /src/config/defaults/config.json
-            console.log(result);
-        });
+        return new Promise((resolve, reject) => {
+            (async function() {
+                try {
+                    await filesystem.write(`${filesystem.APP_DATA}/config.json`, JSON.stringify(def_config));
+
+                    resolve();
+                } catch(e) {
+                    reject();
+                }
+            })();
+        })
     }
 });
