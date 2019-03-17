@@ -8,7 +8,7 @@ define(function() {
     };
 
     function init(events) {
-        if (overwolf) {
+        if (window.overwolf) {
             overwolf.windows.getMainWindow().eventBus.on('updatedRoster', function(obj) {
                 update(obj);
             });

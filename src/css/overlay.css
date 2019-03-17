@@ -11,7 +11,7 @@
   height: 32px;
   background-size: 25.92px;
   background-repeat: no-repeat;
-  margin-left: 3px;
+  margin-left: 6px;
   vertical-align: middle;
 }
 .toolbar .item[data-type="unknown"] .icon {
@@ -30,4 +30,22 @@
   display: inline-block;
   width: 20px;
   height: 20px;
+}
+.status-bar .info {
+  display: inline-block;
+  font-size: 36px;
+  font-family: 'Teko', sans-serif;
+  color: rgba(255, 255, 255, 0.8);
+  width: 145px;
+}
+.status-bar .roster-icons {
+  display: inline-block;
+}
+.status-bar .roster-icons .icon {
+  width: 30px;
+  height: 30px;
+  background-size: contain;
+  display: inline-block;
+  border: 2px solid #000000;
+  border-radius: 15px;
 }

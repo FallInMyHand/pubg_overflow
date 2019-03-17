@@ -9,9 +9,10 @@
         <script>
             if (document.location.hostname === 'localhost') {
                 let head = document.querySelector('head');
-                let style = document.createElement('style');
-                style.type = 'text/css';
-                style.href = '../../css/dev.css';
+                let style = document.createElement('link');
+                style.setAttribute('type', 'text/css');
+                style.setAttribute('href', '../../css/dev.css');
+                style.setAttribute('rel', 'stylesheet');
                 head.appendChild(style);
             }
         </script>
@@ -26,6 +27,18 @@
             <div class="break"></div>
             <div class="item" data-type="rabbit"><span class="value">0</span><span class="icon"></span></div>
         </div>
-        <div class="status-bar"></div>
+        <div class="status-bar">
+            <div class="info">
+                DMG: <span class="value">0</span>
+            </div>
+            <div class="roster-icons">
+                <span class="icon" data-status="alive" style="background-image: url(../images/players/roflanEbalo.png);"></span>
+                <span class="icon" data-status="alive" style="background-image: url(../images/players/pepega.png);"></span>
+                <span class="icon" data-status="alive" style="background-image: url(../images/players/shroud.jpg);"></span>
+                <span class="icon" data-status="dead" style="background-image: url(../images/players/cat.png);"></span>
+                <span class="icon" data-status="dead" style="background-image: url(../images/players/doge.jpg);"></span>
+                <span class="icon" data-status="dead" style="background-image: url(../images/players/pes.jpg);"></span>
+            </div>
+        </div>
     </body>
 </html>

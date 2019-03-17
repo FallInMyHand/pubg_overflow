@@ -14,7 +14,7 @@
             height: @icon-dimension;
             background-size: @icon-dimension*0.81;
             background-repeat: no-repeat;
-            margin-left: 3px;
+            margin-left: 6px;
             vertical-align: middle;
         }
 
@@ -36,5 +36,35 @@
         display: inline-block;
         width: 20px;
         height: 20px;
+    }
+}
+
+.status-bar {
+    .info {
+        display: inline-block;
+        font-size: 36px;
+        font-family: 'Teko', sans-serif;
+        color: rgba(255, 255, 255, 0.8);
+        width: 145px;
+    }
+
+    .roster-icons {
+        display: inline-block;
+        .icon {
+            width: 30px;
+            height: 30px;
+            background-size: contain;
+            display: inline-block;
+            border: 2px solid #000000;
+            border-radius: 15px;
+
+            &[data-status="alive"] {
+
+            }
+
+            &[data-status="dead"] {
+
+            }
+        }
     }
 }

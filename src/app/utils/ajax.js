@@ -32,7 +32,7 @@ define(function() {
                 xhr.open('GET', url, true);
                 if (options.headers) {
                     for (let k in options.headers) {
-                        xhr.setRequestHeader(k, options[k]);
+                        xhr.setRequestHeader(k, options.headers[k]);
                     }
                 }
                 xhr.send(null);

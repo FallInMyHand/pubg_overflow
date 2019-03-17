@@ -28,7 +28,7 @@ define(['app/utils/ajax'], function(ajax) {
 
     async function getMatchAsset(match_id) {
         return new Promise(async function(resolve, reject) {
-            let result = JSON.parse(await ajax(`${match_url}/${match_id}`, { method: 'GET' }));
+            let result = JSON.parse(await ajax(`${match_url}/${match_id}`, { method: 'GET', headers: { accept: 'application/vnd.api+json' } }));
             let asset = result.included.find((d) => d.type === 'asset');
             if (asset) {
                 resolve(asset);

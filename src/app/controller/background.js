@@ -45,7 +45,11 @@ define(['app/services/filesystem'], function(filesystem) {
                                     let asset = await pubgapi.getMatchAsset(matches_ids[0]);
                                     let telemetry = await pubgapi.getTelemetry(asset.attributes.URL);
 
-                                    console.log(telemetry.filter(t => t._T === 'LogPlayerKill'));
+                                    let n = 'FallInMyHand';
+                                    let all = telemetry.filter(t => t._T === 'LogPlayerKill');
+                                    let killed = all.filter(t => t.killer.name === n);
+                                    let killedBy = all.filter(t => t.victim.name === n);
+                                    console.log('k/d', killed, killedBy);
                                 }
                             }) ();
                         });
