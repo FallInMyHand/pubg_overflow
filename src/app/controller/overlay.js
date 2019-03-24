@@ -10,6 +10,7 @@ define(function() {
     function init(events) {
         if (window.overwolf) {
             overwolf.windows.getMainWindow().eventBus.on('updatedRoster', function(obj) {
+                console.log('event', 'updatedRoster');
                 update(obj);
             });
         }

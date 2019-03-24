@@ -1,5 +1,9 @@
-define(['app/services/filesystem'], function(filesystem) {
+define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDatabase'], function(filesystem, arrayUtils, database) {
     const items = ['unknown', 'dominated', 'neutral', 'rabbit'];
+
+    let userConfig = null,
+        processedMatches = null,
+        userStat = null;
 
     const FEATURE_PHASE = 'phase';
     const FEATURE_ROSTER = 'roster';
@@ -23,44 +27,93 @@ define(['app/services/filesystem'], function(filesystem) {
     };
 
     function init(events) {
-        if (overwolf) {
+        if (window.overwolf) {
+            let startApplication = () => {
+                const readFiles = [
+                    filesystem.read(`${filesystem.APP_DATA}/processed.${userConfig.pubg.accountId}.json`),
+                    filesystem.read(`${filesystem.APP_DATA}/stat.${userConfig.pubg.accountId}.json`)
+                ];
+
+                Promise.all(readFiles).then(values => {
+                    processedMatches = JSON.parse(values[0]);
+                    userStat = JSON.parse(values[1]);
+
+                    require(['app/services/pubg'], (pubgapi) => {
+                        (async function() {
+                            let matches_ids = await pubgapi.getMatcheIds(userConfig.username);
+                            matches_ids = matches_ids.filter((d) => { return !processedMatches.matches.find(v => v.id === d)});
+                            console.log(matches_ids);
+                            if (matches_ids.length > 0) {
+                                let accId = userConfig.pubg.accountId;
+                                let results = await arrayUtils.asyncForEach(matches_ids, (match_id) => {
+                                    return new Promise(async (resolve, reject) => {
+                                        let asset = await pubgapi.getMatchAsset(match_id);
+                                        let telemetry = await pubgapi.getTelemetry(asset.attributes.URL);
+
+                                        let all = telemetry.filter(t => t._T === 'LogPlayerKill');
+                                        let steaks = [];
+
+                                        let killed = all.filter(t => t.killer.accountId === accId);
+                                        killed.forEach((kill_log) => {
+                                            let n = kill_log.victim.name;
+                                            if (!userStat.players[n]) {
+                                                userStat.players[n] = empty_stat_log();
+                                            }
+                                            // check kill streak
+                                            userStat.players[n].k++;
+                                            userStat.players[n].ds = 0;
+                                        });
+                                        let killedBy = all.filter(t => t.victim.accountId === accId);
+                                        killedBy.forEach((death_log) => {
+                                            let n = death_log.killer.name;
+                                            if (!userStat.players[n]) {
+                                                userStat.players[n] = empty_stat_log();
+                                            }
+                                            // check death streak
+                                            userStat.players[n].d++;
+                                            userStat.players[n].ks = 0;
+                                        });
+
+                                        processedMatches.matches.push({
+                                            id: match_id,
+                                            datetime: (new Date()).getTime() / 1000
+                                        });
+
+                                        database.load(userStat);
+
+                                        resolve(Math.random());
+                                    });
+                                });
+
+                                console.log('going to write')
+                                Promise.all([
+                                    filesystem.write(`${filesystem.APP_DATA}/processed.${userConfig.pubg.accountId}.json`, JSON.stringify(processedMatches)),
+                                    filesystem.write(`${filesystem.APP_DATA}/stat.${userConfig.pubg.accountId}.json`, JSON.stringify(userStat))
+                                ], () => {
+                                    console.log('finished', results);
+                                });
+                            }
+                        }) ();
+                    });
+                });
+            };
             filesystem.exists(`${filesystem.APP_DATA}/config.json`).then(() => {
-                filesystem.read(`${filesystem.APP_DATA}/config.json`).then((content) => {
-                    let userConfig = JSON.parse(content);
-                    if (!userConfig.pubg.accountId) {
-                        require(['app/services/pubg'], (pubgapi) => {
-                            (async function() {
-                                let accountId = await pubgapi.getAccountId(userConfig.username);
-                                console.log('account id', accountId)
-                                userConfig.pubg.accountId = accountId;
-                                filesystem.write(`${filesystem.APP_DATA}/config.json`, JSON.stringify(userConfig));
-                            }) ();
+                filesystem.read(`${filesystem.APP_DATA}/config.json`).then(content => {
+                    userConfig = JSON.parse(content);
 
-                        });
-                    } else {
-                        require(['app/services/pubg'], (pubgapi) => {
-                            (async function() {
-                                let matches_ids = await pubgapi.test();
-                                if (matches_ids.length > 0) {
-                                    let asset = await pubgapi.getMatchAsset(matches_ids[0]);
-                                    let telemetry = await pubgapi.getTelemetry(asset.attributes.URL);
-
-                                    let n = 'FallInMyHand';
-                                    let all = telemetry.filter(t => t._T === 'LogPlayerKill');
-                                    let killed = all.filter(t => t.killer.name === n);
-                                    let killedBy = all.filter(t => t.victim.name === n);
-                                    console.log('k/d', killed, killedBy);
-                                }
-                            }) ();
-                        });
-                    }
+                    startApplication();
                 });
             }, () => {
-                console.log('config not exist');
                 require(['app/controller/installation'], (installation) => {
-                    installation.install();
+                    installation.install().then(function(user) {
+                        userConfig = user;
+
+                        startApplication();
+                    });
                 });
             });
+
+            applyHotkeys();
 
             overwolf.windows.obtainDeclaredWindow('overlay', function(event) {
                 overwolf.windows.restore('overlay', function(result) {
@@ -69,7 +122,7 @@ define(['app/services/filesystem'], function(filesystem) {
                             overwolf.windows.hide('overlay');
                         });
                     }
-                })
+                });
             });
             overwolf.games.events.onInfoUpdates2.addListener(function(info) {
                 console.log('info update', info);
@@ -99,6 +152,7 @@ define(['app/services/filesystem'], function(filesystem) {
                             }
                         }
                     });
+                    console.log('trigger', 'updatedRoster');
                     events.trigger('updatedRoster', {
                         unknown: players.unknown.length,
                         dominated: players.dominated.length,
@@ -147,12 +201,9 @@ define(['app/services/filesystem'], function(filesystem) {
         });
     }
 
-    function predictPlayerLevel(name) {
-        return 'unknown';
-    }
-
     function addPlayer(name) {
-        let level = predictPlayerLevel(name);
+        let level = database.select(name);
+        console.log('select', level);
         players[level].push(name);
     }
 
@@ -163,6 +214,31 @@ define(['app/services/filesystem'], function(filesystem) {
                 players[k].splice(i, 1);
 
                 return false;
+            }
+        });
+    }
+
+    function empty_stat_log() {
+        return {
+            k: 0,
+            d: 0,
+            ks: 0,
+            ds: 0
+        };
+    }
+
+    function applyHotkeys() {
+        overwolf.settings.registerHotKey('toggle_roster', (arg) => {
+            console.log('hokey toggle');
+            if (arg.status == "success") {
+                alert("This is my cool action!");
+            }
+        });
+
+        overwolf.settings.registerHotKey('settings', (arg) => {
+            console.log('hotkey settings')
+            if (arg.status == "success") {
+                alert("This is my cool action!");
             }
         });
     }

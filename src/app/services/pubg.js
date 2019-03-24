@@ -7,7 +7,7 @@ define(['app/utils/ajax'], function(ajax) {
         getAccountId,
         getMatchAsset,
         getTelemetry,
-        test
+        getMatcheIds
     };
 
     function find(name) {
@@ -49,9 +49,9 @@ define(['app/utils/ajax'], function(ajax) {
         });
     }
 
-    async function test/*getMatchInfo*/() {
+    async function getMatcheIds(user_name) {
         return new Promise(async function(resolve, reject) {
-            let result = JSON.parse(await ajax(`${proxy_url}/players?filter[playerNames]=FallInMyHand`, { method: 'GET' }));
+            let result = JSON.parse(await ajax(`${proxy_url}/players?filter[playerNames]=${user_name}`, { method: 'GET' }));
             if (result.data && Array.isArray(result.data) && result.data.length > 0) {
                 let matches = result.data[0].relationships.matches.data;
 

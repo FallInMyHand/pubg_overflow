@@ -1,12 +1,34 @@
 @icon-dimension: 32px;
 
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.toolbar, .status-bar {
+    width: 380px;
+    padding: 6px;
+}
+
 .toolbar {
+    background-color: rgba(35,35,35,0.5);
+    width: 380px;
+    padding: 6px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+
     .item {
         display: inline-block;
         font-size: 36px;
         font-family: 'Teko', sans-serif;
         color: rgba(255, 255, 255, 0.8);
         line-height: @icon-dimension;
+
+        .value {
+            display: inline-block;
+            width: 40px;
+            text-align: right;
+        }
 
         .icon {
             display: inline-block;
@@ -34,7 +56,7 @@
 
     .break {
         display: inline-block;
-        width: 20px;
+        width: 5px;
         height: 20px;
     }
 }
@@ -43,12 +65,18 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    background-color: rgba(95,95,95,0.4);
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
 
     .info {
         display: inline-block;
         font-size: 36px;
         font-family: 'Teko', sans-serif;
         color: rgba(255, 255, 255, 0.8);
+
+        width: 150px;
+        margin-left: 10px;
     }
 
     .roster-icons {
@@ -99,7 +127,7 @@
             }
 
             &[data-status="alive"] {
-                
+
             }
 
             &[data-status="dead"] {
@@ -118,7 +146,7 @@
                 }
             }
 
-            
+
         }
     }
 }
