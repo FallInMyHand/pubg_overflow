@@ -20,13 +20,16 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
         rabbit: []
     };
 
+    let events = {};
     let _roster = {}; // to know names for exit as {}
+    let _roster_shown = false;
 
     return {
         init
     };
 
-    function init(events) {
+    function init(evn) {
+        events = evn;
         if (window.overwolf) {
             let startApplication = () => {
                 const readFiles = [
@@ -152,13 +155,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                             }
                         }
                     });
-                    console.log('trigger', 'updatedRoster');
-                    events.trigger('updatedRoster', {
-                        unknown: players.unknown.length,
-                        dominated: players.dominated.length,
-                        neutral: players.neutral.length,
-                        rabbit: players.rabbit.length
-                    });
+                    triggerUpdatedRoster();
                 } else if (info.feature === FEATUR_KILL) {
 
                 }
@@ -172,7 +169,6 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             if (response.status === 'error') {
                 setTimeout(subscribeToEvents, REGISTER_RETRY_TIMEOUT);
             } else if (response.status === 'success') {
-                console.log('connected');
                 overwolf.games.events.onNewEvents.removeListener(_handleGameEvent);
                 overwolf.games.events.onNewEvents.addListener(_handleGameEvent);
             }
@@ -203,7 +199,6 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
     function addPlayer(name) {
         let level = database.select(name);
-        console.log('select', level);
         players[level].push(name);
     }
 
@@ -229,9 +224,24 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
     function applyHotkeys() {
         overwolf.settings.registerHotKey('toggle_roster', (arg) => {
-            console.log('hokey toggle');
+            console.log('hotkey toggle', arg, _roster_shown);
             if (arg.status == "success") {
-                alert("This is my cool action!");
+                if (!_roster_shown) {
+                    overwolf.windows.obtainDeclaredWindow('roster', (result) => {
+                        if (result.status === 'success') {
+                            overwolf.windows.restore('roster', (r) => {
+                                if (r.status === 'success') {
+                                    _roster_shown = true;
+                                    triggerUpdatedRoster();
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    overwolf.windows.close('roster', () => {
+                        _roster_shown = false;
+                    });
+                }
             }
         });
 
@@ -240,6 +250,17 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             if (arg.status == "success") {
                 alert("This is my cool action!");
             }
+        });
+    }
+
+    function triggerUpdatedRoster() {
+        console.log('trigger update');
+        events.trigger('updatedRoster', {
+            unknown: players.unknown.length,
+            dominated: players.dominated.length,
+            neutral: players.neutral.length,
+            rabbit: players.rabbit.length,
+            all: players.unknown.concat(players.dominated).concat(players.neutral).concat(players.rabbit).sort()
         });
     }
 });

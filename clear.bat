@@ -1,1 +1,1 @@
-rmdir /s /q "%APPDATA%/../local/pubg.killscore/"
+rmdir /s /q "%APPDATA%/../local/pubg.headhunt/"

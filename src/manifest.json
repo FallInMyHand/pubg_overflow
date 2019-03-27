@@ -2,12 +2,14 @@
 	"manifest_version": 1,
 	"type":"WebApp",
 	"meta":{
-		"name": "Pubg Killscore",
+		"name": "PUBG Headhunt",
 		"version": "0.1.0",
 		"minimum-overwolf-version": "0.126.0",
 		"author": "FallInMyHand",
-		"icon": "cat.png",
-		"icon_gray": "cat.png",
+		"icon": "logo.png",
+		"icon_gray": "logo_gray.png",
+		"window_icon": "icon.ico",
+		"launcher_icon": "icon.ico",
 		"description": ""
 	},
 	"permissions": [
@@ -78,6 +80,19 @@
 				},
 				"start_position": {
 					"top": 20,
+					"left": 20
+				}
+			},
+			"roster": {
+				"file": "windows/roster.html",
+				"transparent": false,
+				"resizable": true,
+				"size": {
+					"width": 400,
+					"height": 800
+				},
+				"start_position": {
+					"top": 150,
 					"left": 20
 				}
 			}

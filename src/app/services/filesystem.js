@@ -74,6 +74,6 @@ define(function() {
     }
 
     function preprocess_path(plugin, path) {
-        return path.replace(APP_DATA, `${plugin.LOCALAPPDATA}/pubg.killscore`);
+        return path.replace(APP_DATA, `${plugin.LOCALAPPDATA}/pubg.headhunt`);
     }
 });
