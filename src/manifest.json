@@ -59,6 +59,7 @@
 				"file": "windows/overlay.html",
 				"transparent": true,
 				"resizable": false,
+				"clickthrough": true,
 				"size": {
 					"width": 420,
 					"height": 125
