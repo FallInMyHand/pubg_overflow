@@ -27,16 +27,6 @@ define(function() {
     }
 
     function select(name) {
-        let r = Math.random();
-        if (r < 0.25) {
-            return 'dominated';
-        } else if (r < 0.5) {
-            return 'neutral';
-        } else if (r < 0.75) {
-            return 'rabbit';
-        } else {
-            return 'unknown';
-        }
         if (db.dominated.indexOf(name) > -1) {
             return 'dominated';
         } else if (db.neutral.indexOf(name) > -1) {

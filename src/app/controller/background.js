@@ -13,6 +13,10 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
     const REGISTER_RETRY_TIMEOUT = 10000;
 
+    let replays_last_update = -1;
+    let game_in_process = false,
+        replays_in_process = false;
+
     let players = {
         unknown: [],
         dominated: [],
@@ -41,63 +45,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     processedMatches = JSON.parse(values[0]);
                     userStat = JSON.parse(values[1]);
 
-                    require(['app/services/pubg'], (pubgapi) => {
-                        (async function() {
-                            let matches_ids = await pubgapi.getMatcheIds(userConfig.username);
-                            matches_ids = matches_ids.filter((d) => { return !processedMatches.matches.find(v => v.id === d)});
-                            console.log(matches_ids);
-                            if (matches_ids.length > 0) {
-                                let accId = userConfig.pubg.accountId;
-                                let results = await arrayUtils.asyncForEach(matches_ids, (match_id) => {
-                                    return new Promise(async (resolve, reject) => {
-                                        let asset = await pubgapi.getMatchAsset(match_id);
-                                        let telemetry = await pubgapi.getTelemetry(asset.attributes.URL);
-
-                                        let all = telemetry.filter(t => t._T === 'LogPlayerKill');
-                                        let steaks = [];
-
-                                        let killed = all.filter(t => t.killer.accountId === accId);
-                                        killed.forEach((kill_log) => {
-                                            let n = kill_log.victim.name;
-                                            if (!userStat.players[n]) {
-                                                userStat.players[n] = empty_stat_log();
-                                            }
-                                            // check kill streak
-                                            userStat.players[n].k++;
-                                            userStat.players[n].ds = 0;
-                                        });
-                                        let killedBy = all.filter(t => t.victim.accountId === accId);
-                                        killedBy.forEach((death_log) => {
-                                            let n = death_log.killer.name;
-                                            if (!userStat.players[n]) {
-                                                userStat.players[n] = empty_stat_log();
-                                            }
-                                            // check death streak
-                                            userStat.players[n].d++;
-                                            userStat.players[n].ks = 0;
-                                        });
-
-                                        processedMatches.matches.push({
-                                            id: match_id,
-                                            datetime: (new Date()).getTime() / 1000
-                                        });
-
-                                        database.load(userStat);
-
-                                        resolve(Math.random());
-                                    });
-                                });
-
-                                console.log('going to write')
-                                Promise.all([
-                                    filesystem.write(`${filesystem.APP_DATA}/processed.${userConfig.pubg.accountId}.json`, JSON.stringify(processedMatches)),
-                                    filesystem.write(`${filesystem.APP_DATA}/stat.${userConfig.pubg.accountId}.json`, JSON.stringify(userStat))
-                                ], () => {
-                                    console.log('finished', results);
-                                });
-                            }
-                        }) ();
-                    });
+                    parseReplays();
                 });
             };
             filesystem.exists(`${filesystem.APP_DATA}/config.json`).then(() => {
@@ -128,7 +76,6 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                 });
             });
             overwolf.games.events.onInfoUpdates2.addListener(function(info) {
-                console.log('info update', info);
                 if (info.feature === FEATURE_PHASE) {
                     if (info.info.game_info.phase === 'loading_screen') {
                         overwolf.windows.restore('overlay');
@@ -157,29 +104,109 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     });
                     triggerUpdatedRoster();
                 } else if (info.feature === FEATUR_KILL) {
-
+                    let match_info = info.info.match_info;
+                    console.log('kill total damage', match_info.total_damage_dealt);
+                    console.log('info update', info);
+                } else {
+                    console.log('info update', info);
                 }
             })
-            subscribeToEvents();
+            attachOverwolfEvents();
+
+            events.on('matchEnd', (event) => {
+                if (!replays_in_process && !game_in_process && (getTime() - replays_last_update) > 7200) {
+                    parseReplays();
+                }
+            });
         }
     }
 
-    function subscribeToEvents() {
+    function parseReplays() {
+        console.log('parse replays: start');
+        replays_in_process = true;
+
+        let end = () => {
+            replays_in_process = false;
+            replays_last_update = getTime();
+            console.log('parse replays: end');
+        };
+        require(['app/services/pubg'], (pubgapi) => {
+            (async function() {
+                let matches_ids = await pubgapi.getMatcheIds(userConfig.username);
+                matches_ids = matches_ids.filter((d) => { return !processedMatches.matches.find(v => v.id === d)});
+                console.log(matches_ids);
+                if (matches_ids.length > 0) {
+                    let accId = userConfig.pubg.accountId;
+                    let results = await arrayUtils.asyncForEach(matches_ids, (match_id) => {
+                        return new Promise(async (resolve, reject) => {
+                            let asset = await pubgapi.getMatchAsset(match_id);
+                            let telemetry = await pubgapi.getTelemetry(asset.attributes.URL);
+
+                            let all = telemetry.filter(t => t._T === 'LogPlayerKill');
+                            let steaks = [];
+
+                            let killed = all.filter(t => t.killer.accountId === accId);
+                            killed.forEach((kill_log) => {
+                                let n = kill_log.victim.name;
+                                if (!userStat.players[n]) {
+                                    userStat.players[n] = empty_stat_log();
+                                }
+                                // check kill streak
+                                userStat.players[n].k++;
+                                userStat.players[n].ds = 0;
+                            });
+                            let killedBy = all.filter(t => t.victim.accountId === accId);
+                            killedBy.forEach((death_log) => {
+                                let n = death_log.killer.name;
+                                if (!userStat.players[n]) {
+                                    userStat.players[n] = empty_stat_log();
+                                }
+                                // check death streak
+                                userStat.players[n].d++;
+                                userStat.players[n].ks = 0;
+                            });
+
+                            processedMatches.matches.push({
+                                id: match_id,
+                                datetime: (new Date()).getTime() / 1000
+                            });
+
+                            database.load(userStat);
+
+                            resolve(Math.random());
+                        });
+                    });
+
+                    Promise.all([
+                        filesystem.write(`${filesystem.APP_DATA}/processed.${userConfig.pubg.accountId}.json`, JSON.stringify(processedMatches)),
+                        filesystem.write(`${filesystem.APP_DATA}/stat.${userConfig.pubg.accountId}.json`, JSON.stringify(userStat))
+                    ], () => {
+                        console.log('finished', results);
+
+                        end();
+                    });
+                } else {
+                    end();
+                }
+            }) ();
+        });
+    }
+
+    function attachOverwolfEvents() {
         overwolf.games.events.setRequiredFeatures(REQUIRED_FEATURES, function(response) {
             if (response.status === 'error') {
-                setTimeout(subscribeToEvents, REGISTER_RETRY_TIMEOUT);
+                setTimeout(attachOverwolfEvents, REGISTER_RETRY_TIMEOUT);
             } else if (response.status === 'success') {
                 overwolf.games.events.onNewEvents.removeListener(_handleGameEvent);
                 overwolf.games.events.onNewEvents.addListener(_handleGameEvent);
             }
-          });
+        });
     }
 
     function _handleGameEvent(eventsInfo) {
-        // matchStart
-        console.log(eventsInfo);
         eventsInfo.events.forEach((event) => {
             if (event.name === 'matchEnd') {
+                game_in_process = false;
                 overwolf.windows.hide('overlay');
 
                 players = {
@@ -189,6 +216,10 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     rabbit: []
                 };
                 _roster = {};
+
+                events.trigger('matchEnd');
+            } else if (event.name === 'matchStart') {
+                game_in_process = true;
             } else if (event.name === 'damage_dealt') {
 
             } else {
@@ -224,7 +255,6 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
     function applyHotkeys() {
         overwolf.settings.registerHotKey('toggle_roster', (arg) => {
-            console.log('hotkey toggle', arg, _roster_shown);
             if (arg.status == "success") {
                 if (!_roster_shown) {
                     overwolf.windows.obtainDeclaredWindow('roster', (result) => {
@@ -254,7 +284,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     }
 
     function triggerUpdatedRoster() {
-        console.log('trigger update');
+        console.log('updateRoster')
         events.trigger('updatedRoster', {
             unknown: players.unknown.length,
             dominated: players.dominated.length,
@@ -262,5 +292,9 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             rabbit: players.rabbit.length,
             all: players.unknown.concat(players.dominated).concat(players.neutral).concat(players.rabbit).sort()
         });
+    }
+
+    function getTime() {
+        return (new Date()).getTime();
     }
 });

@@ -14,6 +14,7 @@ define(['app/services/pubg'], function(pubgapi) {
     }
 
     function initUI() {
+        console.log(window.overwolf);
         if (window.overwolf) {
             let eventBus = overwolf.windows.getMainWindow().eventBus;
             let step1 = document.querySelector('#step1');
