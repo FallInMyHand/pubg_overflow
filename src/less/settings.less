@@ -29,8 +29,10 @@ div[data-role="status"] {
 
     &.loading {
         display: inline-block;
-        background-image: url("../images/icon/loading.svg");
-        animation: icon-loading 1s linear infinite;
+        border: 3px solid rgba(0,0,0,0.3);
+        border-top: 3px solid #EEE;
+        border-radius: 100%;
+        animation: icon-loading 0.5s linear infinite;
     }
 
     &.success {
