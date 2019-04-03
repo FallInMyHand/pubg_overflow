@@ -21,6 +21,7 @@ body {
 
 div[data-role="status"] {
     display: none;
+    position: relative;
     width: 24px;
     height: 24px;
     margin-left: 4px;
@@ -28,18 +29,42 @@ div[data-role="status"] {
 
     &.loading {
         display: inline-block;
-        background-image: url("../images/icon/loading.svg");
-        animation: icon-loading 1s linear infinite;
+        border: 3px solid rgba(0,0,0,0.3);
+        border-top: 3px solid #EEE;
+        border-radius: 100%;
+        animation: icon-loading 0.5s linear infinite;
     }
 
     &.success {
         display: inline-block;
-        background: green;
+        height: 15px;
+        border-bottom: 3px solid green;
+        border-left: 3px solid green;
+        transform: rotate(-45deg);
     }
 
     &.error {
         display: inline-block;
-        background: red;
+        
+        &::before,
+        &::after {
+            content: "";
+            display: block;
+            height: 30px;
+            width: 3px;
+            background-color: red;
+            position: absolute;
+            top: 0;
+            left: 10px;
+        }
+
+        &::before {
+            transform: rotate(-45deg);
+        }
+
+        &::after {
+            transform: rotate(45deg);
+        }
     }
 }
 
