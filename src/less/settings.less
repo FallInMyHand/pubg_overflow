@@ -21,6 +21,7 @@ body {
 
 div[data-role="status"] {
     display: none;
+    position: relative;
     width: 24px;
     height: 24px;
     margin-left: 4px;
@@ -34,12 +35,34 @@ div[data-role="status"] {
 
     &.success {
         display: inline-block;
-        background: green;
+        height: 15px;
+        border-bottom: 3px solid green;
+        border-left: 3px solid green;
+        transform: rotate(-45deg);
     }
 
     &.error {
         display: inline-block;
-        background: red;
+        
+        &::before,
+        &::after {
+            content: "";
+            display: block;
+            height: 30px;
+            width: 3px;
+            background-color: red;
+            position: absolute;
+            top: 0;
+            left: 10px;
+        }
+
+        &::before {
+            transform: rotate(-45deg);
+        }
+
+        &::after {
+            transform: rotate(45deg);
+        }
     }
 }
 
