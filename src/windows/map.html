@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>overlay</title>
+        <script data-main="../../app/start/map" src="../../require.js"></script>
+        <link rel="stylesheet" type="text/css" href="../../css/map.css">
+        <link href="https://fonts.googleapis.com/css?family=Teko:500" rel="stylesheet">
+        <script>
+            if (document.location.hostname === 'localhost') {
+                let head = document.querySelector('head');
+                let style = document.createElement('link');
+                style.setAttribute('type', 'text/css');
+                style.setAttribute('href', '../../css/dev.css');
+                style.setAttribute('rel', 'stylesheet');
+                head.appendChild(style);
+            }
+        </script>
+    </head>
+    <body data-window="map">
+        <div id="map">
+            <div class="point">point</div>
+            <svg><path></path></svg>
+        </div>
+    </body>
+</html>

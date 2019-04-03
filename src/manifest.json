@@ -97,10 +97,15 @@
 				"action-type": "custom",
 				"default": "Shift+F1"
 			},
-			"settings": {
+			"toggle_settings": {
 				"title": "Show settings",
 				"action-type": "custom",
 				"default": "Shift+F2"
+			},
+			"toggle_map": {
+				"title": "Show map",
+				"action-type": "custom",
+				"default": "Shift+F3"
 			}
 		},
 		"extra-objects": {
