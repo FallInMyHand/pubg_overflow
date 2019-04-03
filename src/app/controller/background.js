@@ -191,11 +191,11 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                                 datetime: (new Date()).getTime() / 1000
                             });
 
-                            database.load(userStat);
-
                             resolve(Math.random());
                         });
                     });
+
+                    database.load(userStat, userConfig.settings);
 
                     Promise.all([
                         filesystem.write(`${filesystem.APP_DATA}/processed.${userConfig.pubg.accountId}.json`, JSON.stringify(processedMatches)),
@@ -206,6 +206,8 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                         end();
                     });
                 } else {
+                    database.load(userStat, userConfig.settings);
+
                     end();
                 }
             }) ();

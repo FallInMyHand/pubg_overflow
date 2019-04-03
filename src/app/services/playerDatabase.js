@@ -1,10 +1,9 @@
 define(function() {
     const db = {
-        unknown: [],
-        dominated: [],
-        neutral: [],
-        rabbit: []
+        players: {}
     };
+
+    let settings = {};
 
     return {
         load,
@@ -12,32 +11,28 @@ define(function() {
     };
 
     function reset() {
-        db.unknown = [];
-        db.dominated = [];
-        db.neutral = [];
-        db.rabbit = [];
+        db.players = {};
     }
 
-    function load(data) {
+    function load(data, s) {
         reset();
-
-        // todo: implement database
-        console.log('database', data);
-
-        for (let pl in data.players) {
-            db.neutral.push(pl);
-        }
+        settings = s;
+        db.players = data.players;
     }
 
     function select(name) {
-        if (db.dominated.indexOf(name) > -1) {
-            return 'dominated';
-        } else if (db.neutral.indexOf(name) > -1) {
-            return 'neutral';
-        } else if (db.rabbit.indexOf(name) > -1) {
-            return 'rabbit';
-        } else {
+        if (db.players[name] === undefined) {
             return 'unknown';
+        } else {
+            let stat = db.players[name];
+
+            if (stat.ks >= settings.ks_amount) {
+                return 'rabbit';
+            } else if (stat.ds >= settings.ds_amount) {
+                return 'dominated';
+            } else {
+                return 'neutral';
+            }
         }
     }
 });
