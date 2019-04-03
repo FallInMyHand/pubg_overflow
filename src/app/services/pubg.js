@@ -16,11 +16,14 @@ define(['app/utils/ajax'], function(ajax) {
 
     async function getAccountId(name) {
         return new Promise(async function(resolve, reject) {
-            let result = JSON.parse(await ajax(`${proxy_url}/players?filter[playerNames]=${name}`, { method: 'GET' }));
-
-            if (result.data && Array.isArray(result.data) && result.data.length > 0) {
-                resolve(result.data[0].id);
-            } else {
+            try {
+                let result = JSON.parse(await ajax(`${proxy_url}/players?filter[playerNames]=${name}`, { method: 'GET' }));
+                if (result.data && Array.isArray(result.data) && result.data.length > 0) {
+                    resolve(result.data[0].id);
+                } else {
+                    reject('bad request');
+                }
+            } catch(e) {
                 reject('bad request');
             }
         });

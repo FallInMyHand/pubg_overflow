@@ -7,6 +7,9 @@ define(function() {
                 if (xhr.readyState == 1) {
                     // option.beforeSend();
                 }
+                if (xhr.status === 404) {
+                    reject();
+                }
                 if (xhr.readyState == 4) {
                     // option.complete(xhr, xhr.status);
                     if (xhr.status == 200 || xhr.status == 0) {

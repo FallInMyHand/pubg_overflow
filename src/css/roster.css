@@ -34,6 +34,18 @@ body {
   display: inline-block;
   width: 15px;
   height: 15px;
-  background: url("../images/icon/guy_na.svg");
   background-size: cover;
+  margin-right: 8px;
+}
+#roster .player .icon.unknown {
+  background-image: url("../images/icon/guy_na.svg");
+}
+#roster .player .icon.rabbit {
+  background-image: url("../images/icon/guy_rabbit.svg");
+}
+#roster .player .icon.neutral {
+  background-image: url("../images/icon/guy_normal2.svg");
+}
+#roster .player .icon.dominated {
+  background-image: url("../images/icon/guy_bad.svg");
 }

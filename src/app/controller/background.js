@@ -17,6 +17,8 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     let game_in_process = false,
         replays_in_process = false;
 
+    let _dead = [];
+
     let players = {
         unknown: [],
         dominated: [],
@@ -28,12 +30,15 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     let _roster = {}; // to know names for exit as {}
     let _roster_shown = false;
 
+    const streaks = [];
+
     return {
         init
     };
 
     function init(evn) {
         events = evn;
+        window._showStreaks = () => { console.log(streaks); };
         if (window.overwolf) {
             let startApplication = () => {
                 const readFiles = [
@@ -51,6 +56,12 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             filesystem.exists(`${filesystem.APP_DATA}/config.json`).then(() => {
                 filesystem.read(`${filesystem.APP_DATA}/config.json`).then(content => {
                     userConfig = JSON.parse(content);
+                    if (!userConfig.settings) {
+                        userConfig.settings = {
+                            ks_amount: 2,
+                            ds_amount: 2
+                        };
+                    }
 
                     startApplication();
                 });
@@ -80,7 +91,6 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     if (info.info.game_info.phase === 'loading_screen') {
                         overwolf.windows.restore('overlay');
                     }
-
                 } else if (info.feature === FEATURE_ROSTER) {
                     let match_info = info.info.match_info;
                     Object.keys(match_info).forEach((k) => {
@@ -106,11 +116,12 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                 } else if (info.feature === FEATUR_KILL) {
                     let match_info = info.info.match_info;
                     console.log('kill total damage', match_info.total_damage_dealt);
-                    console.log('info update', info);
+                    //console.log('info update', info);
                 } else {
-                    console.log('info update', info);
+                    //console.log('info update', info);
                 }
-            })
+                console.log('all info', info);
+            });
             attachOverwolfEvents();
 
             events.on('matchEnd', (event) => {
@@ -137,13 +148,14 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                 console.log(matches_ids);
                 if (matches_ids.length > 0) {
                     let accId = userConfig.pubg.accountId;
-                    let results = await arrayUtils.asyncForEach(matches_ids, (match_id) => {
+                    let results = await arrayUtils.asyncForEach(matches_ids.reverse(), (match_id) => {
                         return new Promise(async (resolve, reject) => {
                             let asset = await pubgapi.getMatchAsset(match_id);
                             let telemetry = await pubgapi.getTelemetry(asset.attributes.URL);
 
                             let all = telemetry.filter(t => t._T === 'LogPlayerKill');
-                            let steaks = [];
+                            let ks_amount = userConfig.settings.ks_amount,
+                                ds_amount = userConfig.settings.ds_amount;
 
                             let killed = all.filter(t => t.killer.accountId === accId);
                             killed.forEach((kill_log) => {
@@ -151,9 +163,12 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                                 if (!userStat.players[n]) {
                                     userStat.players[n] = empty_stat_log();
                                 }
-                                // check kill streak
                                 userStat.players[n].k++;
+                                userStat.players[n].ks++;
                                 userStat.players[n].ds = 0;
+                                if (userStat.players[n].ks >= ks_amount) {
+                                    streaks.push([1, userStat.players[n].ks - ks_amount], n);
+                                }
                             });
                             let killedBy = all.filter(t => t.victim.accountId === accId);
                             killedBy.forEach((death_log) => {
@@ -163,7 +178,12 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                                 }
                                 // check death streak
                                 userStat.players[n].d++;
+                                userStat.players[n].ds++;
                                 userStat.players[n].ks = 0;
+
+                                if (userStat.players[n].ds >= ds_amount) {
+                                    streaks.push([-1, userStat.players[n].ds - ds_amount, n]);
+                                }
                             });
 
                             processedMatches.matches.push({
@@ -215,6 +235,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     neutral: [],
                     rabbit: []
                 };
+                _dead = [];
                 _roster = {};
 
                 events.trigger('matchEnd');
@@ -239,6 +260,11 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             if (i > -1) {
                 players[k].splice(i, 1);
 
+                /*
+                 if in game mark him as dead
+                 _dead.push({ type: k, name: name });
+                */
+
                 return false;
             }
         });
@@ -262,7 +288,9 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                             overwolf.windows.restore('roster', (r) => {
                                 if (r.status === 'success') {
                                     _roster_shown = true;
-                                    triggerUpdatedRoster();
+                                    setTimeout(() => {
+                                        triggerUpdatedRoster();
+                                    }, 500);
                                 }
                             });
                         }
@@ -276,21 +304,59 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
         });
 
         overwolf.settings.registerHotKey('settings', (arg) => {
-            console.log('hotkey settings')
-            if (arg.status == "success") {
-                alert("This is my cool action!");
+            if (arg.status === 'success') {
+                overwolf.windows.obtainDeclaredWindow('settings', function(event) {
+                    overwolf.windows.restore('settings', function(result) {
+                        if (result.status === 'success') {
+                            overwolf.windows.changeSize('settings', 400, 700, () => {
+                                setTimeout(function() {
+                                    eventBus.trigger('settings');
+                                }, 500);
+                            });
+                        }
+                    });
+                });
             }
         });
     }
 
     function triggerUpdatedRoster() {
-        console.log('updateRoster')
+        let all = [];
+        players.unknown.forEach((n) => {
+            all.push({
+                type: 'unknown',
+                name: n
+            });
+        });
+        players.dominated.forEach((n) => {
+            all.push({
+                type: 'dominated',
+                name: n
+            });
+        });
+        players.neutral.forEach((n) => {
+            all.push({
+                type: 'neutral',
+                name: n
+            });
+        });
+        players.rabbit.forEach((n) => {
+            all.push({
+                type: 'rabbit',
+                name: n
+            });
+        });
+
         events.trigger('updatedRoster', {
             unknown: players.unknown.length,
             dominated: players.dominated.length,
             neutral: players.neutral.length,
             rabbit: players.rabbit.length,
-            all: players.unknown.concat(players.dominated).concat(players.neutral).concat(players.rabbit).sort()
+            all: all.sort(function(a, b) {
+                if(a.name < b.name) { return -1; }
+                if(a.name > b.name) { return 1; }
+                return 0;
+            })
         });
     }
 

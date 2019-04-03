@@ -2,40 +2,35 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Background page</title>
+        <title>Settings</title>
         <script data-main="../../app/start_settings" src="../../require.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Teko:500" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="../../css/settings.css">
         <link rel="stylesheet" type="text/css" href="../../css/inputs.css">
+        <script>
+            if (document.location.hostname === 'localhost') {
+                let head = document.querySelector('head');
+                let style = document.createElement('link');
+                style.setAttribute('type', 'text/css');
+                style.setAttribute('href', '../../css/dev.css');
+                style.setAttribute('rel', 'stylesheet');
+                head.appendChild(style);
+            }
+        </script>
     </head>
-    <body>
+    <body data-window="settings">
         <div class="form">
-            <div id="step1" class="part">
-                <div>
-                    <input id="step1-username" type="text" placeholder="Nickname"><div class="icon-loading"></div>
-                </div>
-                <div>
+            <div id="installation" class="part">
+                <div class="form-row">
+                    <input id="step1-username" type="text" placeholder="Nickname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                     <button id="step1-check" class="submit">Next</button>
+                    <div data-role="status"></div>
                 </div>
+                <div class="help">Need input PUBG username(Case Sensitive), then application will analyse matches from your account.</div>
             </div>
-            <div id="step2" class="part">
+            <div id="settings" class="part">
                 <div>
                     <input readonly value="FallInMyHand">
-                </div>
-                <div>
-                    <div>
-                        <input>
-                        <input>
-                    </div>
-                </div>
-                <div>
-
-                </div>
-                <div>
-
-                </div>
-                <div>
-
                 </div>
             </div>
         </div>

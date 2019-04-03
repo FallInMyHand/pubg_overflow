@@ -21,6 +21,9 @@ define(function() {
     function load(data) {
         reset();
 
+        // todo: implement database
+        console.log('database', data);
+
         for (let pl in data.players) {
             db.neutral.push(pl);
         }

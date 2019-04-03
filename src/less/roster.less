@@ -37,8 +37,24 @@ body {
             display: inline-block;
             width: 15px;
             height: 15px;
-            background: url("../images/icon/guy_na.svg");
             background-size: cover;
+            margin-right: 8px;
+
+            &.unknown {
+                background-image: url("../images/icon/guy_na.svg");
+            }
+
+            &.rabbit {
+                background-image: url("../images/icon/guy_rabbit.svg");
+            }
+
+            &.neutral {
+                background-image: url("../images/icon/guy_normal2.svg");
+            }
+
+            &.dominated {
+                background-image: url("../images/icon/guy_bad.svg");
+            }
         }
     }
 }

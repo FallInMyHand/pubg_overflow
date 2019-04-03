@@ -2,5 +2,9 @@
     "username": "FallInMyHand",
     "pubg": {
         "accountId": null
+    },
+    "settings": {
+        "ks_amount": 2,
+        "ds_amount": 2
     }
 }

@@ -16,8 +16,14 @@
     }
 }
 
-body {
+body[data-window="overlay"] {
     animation-name: background_test;
     animation-duration: 40s;
     animation-iteration-count: infinite;
+}
+
+body[data-window="settings"] {
+    .part {
+        display: block;
+    }
 }

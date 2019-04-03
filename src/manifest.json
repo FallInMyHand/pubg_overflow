@@ -3,12 +3,12 @@
 	"type":"WebApp",
 	"meta":{
 		"name": "PUBG Headhunt",
-		"version": "0.1.0",
+		"version": "0.1.1",
 		"minimum-overwolf-version": "0.126.0",
 		"author": "FallInMyHand",
 		"icon": "logo.png",
 		"icon_gray": "logo_gray.png",
-		"window_icon": "icon.ico",
+		"window_icon": "logo256.png",
 		"launcher_icon": "icon.ico",
 		"description": ""
 	},
@@ -33,17 +33,9 @@
 		"windows": {
 			"background": {
 				"file":"windows/background.html",
-				"transparent": true,
-				"resizable": true,
+				"resizable": false,
 				"show_in_taskbar": false,
-				"size": {
-					"width":700,
-					"height":400
-					},
-				"min_size": {
-					"width":400,
-					"height":400
-				}
+				"is_background_page": true
 			},
 			"statistic": {
 				"file":"windows/statistic.html",
@@ -75,13 +67,14 @@
 				"file": "windows/settings.html",
 				"transparent": false,
 				"resizable": false,
+				"native_window": true,
 				"size": {
 					"width": 400,
-					"height": 700
+					"height": 200
 				},
 				"start_position": {
-					"top": 20,
-					"left": 20
+					"top": 300,
+					"left": 420
 				}
 			},
 			"roster": {

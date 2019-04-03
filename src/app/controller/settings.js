@@ -14,32 +14,47 @@ define(['app/services/pubg'], function(pubgapi) {
     }
 
     function initUI() {
-        console.log(window.overwolf);
         if (window.overwolf) {
             let eventBus = overwolf.windows.getMainWindow().eventBus;
-            let step1 = document.querySelector('#step1');
-            let button = step1.querySelector('#step1-check');
-            button.addEventListener('click', function() {
-                let nickname = step1.querySelector('#step1-username').value.trim();
 
-                if (nickname) {
-                    (async function() {
-                        try {
-                            let accountId = await pubgapi.getAccountId(nickname);
-                            eventBus.trigger('obtaintUserData', {
-                                username: nickname,
-                                accountId: accountId
-                            });
+            eventBus.on('installation', function() {
+                let installation = document.querySelector('#installation');
+                installation.style.display = 'block';
 
-                            overwolf.windows.close('settings', callback)
-                        } catch(e) {
-                            // user not found or other error
-                        }
-                    }) ();
-                }
+                let button = installation.querySelector('#step1-check');
+                button.addEventListener('click', function() {
+                    button.disabled = true;
+
+                    let nickname = installation.querySelector('#step1-username').value.trim();
+                    let status = installation.querySelector('div[data-role="status"]');
+                    status.classList.remove('error');
+                    status.classList.add('loading');
+
+                    if (nickname) {
+                        (async function() {
+                            try {
+                                let accountId = await pubgapi.getAccountId(nickname);
+                                status.classList.remove('loading');
+                                status.classList.add('success');
+                                eventBus.trigger('obtaintUserData', {
+                                    username: nickname,
+                                    accountId: accountId
+                                });
+                            } catch(e) {
+                                // user not found or other error
+                                button.disabled = false;
+                                status.classList.remove('loading');
+                                status.classList.add('error');
+                            }
+                        }) ();
+                    }
+                });
+            });
+
+            eventBus.on('settings', function() {
+                let settings = document.querySelector('#settings');
+                settings.style.display = 'block';
             });
         }
-
-        console.log('init ui')
     }
 });

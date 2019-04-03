@@ -16,14 +16,38 @@ body {
     border: 1px solid #a2a2a2;
     margin: 3px 6px;
     padding: 3px;
+    display: none;
 }
 
-.icon-loading {
-    display: inline-block;
-    width: 15px;
-    height: 15x;
-    background-image: url("../images/icon/loading.svg");
+div[data-role="status"] {
+    display: none;
+    width: 24px;
+    height: 24px;
+    margin-left: 4px;
     background-size: cover;
 
-    animation: icon-loading 1s linear infinite;
+    &.loading {
+        display: inline-block;
+        background-image: url("../images/icon/loading.svg");
+        animation: icon-loading 1s linear infinite;
+    }
+
+    &.success {
+        display: inline-block;
+        background: green;
+    }
+
+    &.error {
+        display: inline-block;
+        background: red;
+    }
+}
+
+.help {
+    font-size: 18px;
+    text-align: justify;
+    border: 2px solid #999999;
+    padding: 2px 6px;
+    color: #434343;
+    margin-top: 8px;
 }
