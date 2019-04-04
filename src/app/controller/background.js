@@ -328,12 +328,16 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                             setTimeout(function() {
                                 if (userConfig) {
                                     overwolf.windows.changeSize('settings', 400, 700, () => {
-                                        eventBus.trigger('settings', userConfig);
-                                    }, 500);
+                                        setTimeout(() => {
+                                            eventBus.trigger('settings', userConfig);
+                                        }, 500);
+                                    });
                                 } else {
                                     overwolf.windows.changeSize('settings', 400, 200, () => {
-                                        eventBus.trigger('installation');
-                                    }, 500);
+                                        setTimeout(() => {
+                                            eventBus.trigger('installation');
+                                        }, 500);
+                                    });
                                 }
                             });
                         }
