@@ -82,7 +82,7 @@
 			},
 			"roster": {
 				"file": "windows/roster.html",
-				"transparent": false,
+				"transparent": true,
 				"resizable": true,
 				"size": {
 					"width": 400,
