@@ -31,7 +31,8 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
     const windows = {
         roster: false,
-        settings: false
+        settings: false,
+        map: false
     };
 
     const streaks = [];
@@ -309,11 +310,12 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
         overwolf.settings.registerHotKey('toggle_settings', (arg) => {
             if (arg.status === 'success') {
-                if (windows.settings) {
+                if (!windows.settings) {
                     overwolf.windows.obtainDeclaredWindow('settings', function(event) {
                         overwolf.windows.restore('settings', function(result) {
                             if (result.status === 'success') {
                                 overwolf.windows.changeSize('settings', 400, 700, () => {
+                                    windows.settings = true;
                                     setTimeout(function() {
                                         eventBus.trigger('settings');
                                     }, 500);
@@ -328,6 +330,27 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                 }
             }
         });
+
+        overwolf.settings.registerHotKey('toggle_map', (arg) => {
+            if (arg.status === 'success') {
+                if (!windows.map) {
+                    overwolf.windows.obtainDeclaredWindow('map', function(event) {
+                        overwolf.windows.restore('map', function(result) {
+                            if (result.status === 'success') {
+                                windows.map = true;
+                                setTimeout(() => {
+                                    eventBus.trigger('map');
+                                }, 500);
+                            }
+                        });
+                    });
+                } else {
+                    overwolf.windows.close('map', () => {
+                        windows.map = false;
+                    });
+                }
+            }
+        })
     }
 
     function triggerUpdatedRoster() {
