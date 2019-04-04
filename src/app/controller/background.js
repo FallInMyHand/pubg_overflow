@@ -129,6 +129,21 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     parseReplays();
                 }
             });
+
+            events.on('resetApp', () => {
+                overwolf.windows.close('settings', (result) => {
+                    if (result.status === 'success') {
+                        resetAppData();
+                        require(['app/controller/installation'], (installation) => {
+                            installation.install().then(function(user) {
+                                userConfig = user;
+
+                                startApplication();
+                            });
+                        });
+                    }
+                });
+            });
         }
     }
 
@@ -310,10 +325,16 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                 overwolf.windows.obtainDeclaredWindow('settings', function(event) {
                     overwolf.windows.restore('settings', function(result) {
                         if (result.status === 'success') {
-                            overwolf.windows.changeSize('settings', 400, 700, () => {
-                                setTimeout(function() {
-                                    eventBus.trigger('settings');
-                                }, 500);
+                            setTimeout(function() {
+                                if (userConfig) {
+                                    overwolf.windows.changeSize('settings', 400, 700, () => {
+                                        eventBus.trigger('settings', userConfig);
+                                    }, 500);
+                                } else {
+                                    overwolf.windows.changeSize('settings', 400, 200, () => {
+                                        eventBus.trigger('installation');
+                                    }, 500);
+                                }
                             });
                         }
                     });
@@ -364,5 +385,11 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
     function getTime() {
         return (new Date()).getTime();
+    }
+
+    function resetAppData() {
+        userConfig = null;
+        processedMatches = null;
+        userStat = null;
     }
 });

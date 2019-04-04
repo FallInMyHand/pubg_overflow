@@ -54,6 +54,16 @@ define(['app/services/pubg'], function(pubgapi) {
             eventBus.on('settings', function() {
                 let settings = document.querySelector('#settings');
                 settings.style.display = 'block';
+
+                let clear = settings.querySelector('#clear');
+                clear.addEventListener('click', function() {
+                    let a = confirm('All saved data will be removed from this computer. Are you sure?');
+                    if (a) {
+                        clear.disabled = true;
+
+                        eventBus.trigger('resetApp');
+                    }
+                });
             });
         }
     }

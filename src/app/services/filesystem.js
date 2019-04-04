@@ -8,7 +8,8 @@ define(function() {
         APP_DATA,
         exists,
         read,
-        write
+        write,
+        remove
     };
 
     function init() {
@@ -25,8 +26,8 @@ define(function() {
 
     }
 
-    function exists(path) {
-        return new Promise((resolve, reject) => {
+    async function exists(path) {
+        return new Promise(async (resolve, reject) => {
             plugin_promise.then((plugin) => {
                 path = preprocess_path(plugin, path);
 
@@ -41,8 +42,8 @@ define(function() {
         });
     }
 
-    function read(path) {
-        return new Promise((resolve, reject) => {
+    async function read(path) {
+        return new Promise(async (resolve, reject) => {
             plugin_promise.then((plugin) => {
                 path = preprocess_path(plugin, path);
 
@@ -57,8 +58,8 @@ define(function() {
         });
     }
 
-    function write(path, content) {
-        return new Promise((resolve, reject) => {
+    async function write(path, content) {
+        return new Promise(async (resolve, reject) => {
             plugin_promise.then((plugin) => {
                 path = preprocess_path(plugin, path);
 
@@ -71,6 +72,10 @@ define(function() {
                 });
             });
         });
+    }
+
+    async function remove(path) {
+        // need implementation
     }
 
     function preprocess_path(plugin, path) {

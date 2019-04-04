@@ -68,6 +68,9 @@
 				"transparent": false,
 				"resizable": false,
 				"native_window": true,
+				"show_maximize": false,
+				"show_minimize": false,
+				"is_alt_f4_blocked": true,
 				"size": {
 					"width": 400,
 					"height": 200

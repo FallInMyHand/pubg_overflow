@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Settings</title>
-        <script data-main="../../app/start_settings" src="../../require.js"></script>
+        <script data-main="../../app/start/settings" src="../../require.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Teko:500" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="../../css/settings.css">
         <link rel="stylesheet" type="text/css" href="../../css/inputs.css">
@@ -26,11 +26,14 @@
                     <button id="step1-check" class="submit">Next</button>
                     <div data-role="status"></div>
                 </div>
+                <div class="form-row">
+                    <span></span>
+                </div>
                 <div class="help">Need input PUBG username(Case Sensitive), then application will analyse matches from your account.</div>
             </div>
             <div id="settings" class="part">
                 <div>
-                    <input readonly value="FallInMyHand">
+                    <input readonly value="FallInMyHand" type="text"><button id="clear" class="reset">Reset</button>
                 </div>
             </div>
         </div>
