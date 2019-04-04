@@ -24,6 +24,9 @@ input[type=text] {
 input[type=text]::placeholder {
   text-transform: uppercase;
 }
+input[type=text]:read-only {
+  color: yellow;
+}
 input[type=range] {
   -webkit-appearance: none;
   margin: 18px 0;
@@ -68,6 +71,10 @@ button:hover {
 button[disabled] {
   opacity: 0.5;
   pointer-events: none;
+}
+button.reset {
+  color: #a91b0d;
+  border-color: #a91b0d;
 }
 .checkbox {
   width: 36px;

@@ -26,6 +26,10 @@ input[type=text] {
   &::placeholder {
     text-transform: uppercase;
   }
+
+  &:read-only {
+    color: yellow;
+  }
 }
 
 input[type=range] {
@@ -75,6 +79,11 @@ button {
   &[disabled] {
     opacity: 0.5;
     pointer-events: none;
+  }
+
+  &.reset {
+    color: #a91b0d;
+    border-color: #a91b0d;
   }
 }
 

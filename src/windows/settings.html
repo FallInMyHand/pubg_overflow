@@ -32,8 +32,18 @@
                 <div class="help">Need input PUBG username(Case Sensitive), then application will analyse matches from your account.</div>
             </div>
             <div id="settings" class="part">
-                <div>
-                    <input readonly value="FallInMyHand" type="text"><button id="clear" class="reset">Reset</button>
+                <div class="form-row">
+                    <input readonly value="Read Only" type="text">
+                    <button id="clear" class="reset">Reset</button>
+                </div>
+                <div class="form-row">
+                    <label for="ks">Kill streak</label> <input id="ks" type="number" step="1" min="2">
+                </div>
+                <div class="form-row">
+                    <label for="ds">Death Streak</label> <input id="ds" type="number" step="1" min="2">
+                </div>
+                <div class="form-row">
+                    <button>Save</button>
                 </div>
             </div>
         </div>
