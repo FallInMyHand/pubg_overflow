@@ -1,4 +1,4 @@
-define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDatabase'], function(filesystem, arrayUtils, database) {
+define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDatabase', 'app/model/Overlay'], function(filesystem, arrayUtils, database, Overlay) {
     const items = ['unknown', 'dominated', 'neutral', 'rabbit'];
 
     let userConfig = null,
@@ -30,10 +30,13 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     let _roster = {}; // to know names for exit as {}
 
     const windows = {
+        overlay: true,
         roster: false,
         settings: false,
         map: false
     };
+
+    let overlay;
 
     const streaks = [];
 
@@ -45,6 +48,8 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
         events = evn;
         window._showStreaks = () => { console.log(streaks); };
         if (window.overwolf) {
+            overlay = new Overlay(overwolf, events);
+
             let startApplication = () => {
                 const readFiles = [
                     filesystem.read(`${filesystem.APP_DATA}/processed.${userConfig.pubg.accountId}.json`),
@@ -83,18 +88,15 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             applyHotkeys();
 
             overwolf.windows.obtainDeclaredWindow('overlay', function(event) {
-                overwolf.windows.restore('overlay', function(result) {
-                    if (result.status === 'success') {
-                        overwolf.windows.getOpenWindows((obj) => {
-                            overwolf.windows.hide('overlay');
-                        });
-                    }
+                overlay.show().then(() => {
+                    overlay.hide();
                 });
             });
+
             overwolf.games.events.onInfoUpdates2.addListener(function(info) {
                 if (info.feature === FEATURE_PHASE) {
                     if (info.info.game_info.phase === 'loading_screen') {
-                        overwolf.windows.restore('overlay');
+                        events.trigger('startingMatch');
                     }
                 } else if (info.feature === FEATURE_ROSTER) {
                     let match_info = info.info.match_info;
@@ -250,7 +252,6 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
         eventsInfo.events.forEach((event) => {
             if (event.name === 'matchEnd') {
                 game_in_process = false;
-                overwolf.windows.hide('overlay');
 
                 players = {
                     unknown: [],
@@ -303,6 +304,12 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     }
 
     function applyHotkeys() {
+        overwolf.settings.registerHotKey('toggle_overlay', (arg) => {
+            if (arg.status === 'success') {
+                overlay.toggle();
+            }
+        });
+
         overwolf.settings.registerHotKey('toggle_roster', (arg) => {
             if (arg.status === 'success') {
                 if (!windows.roster) {

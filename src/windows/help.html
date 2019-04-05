@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Help & News</title>
+        <script data-main="../../app/start/help" src="../../require.js"></script>
+        <link rel="stylesheet" type="text/css" href="../../css/help.css">
+        <link href="https://fonts.googleapis.com/css?family=Teko:500" rel="stylesheet">
+        <script>
+            if (document.location.hostname === 'localhost') {
+                let head = document.querySelector('head');
+                let style = document.createElement('link');
+                style.setAttribute('type', 'text/css');
+                style.setAttribute('href', '../../css/dev.css');
+                style.setAttribute('rel', 'stylesheet');
+                head.appendChild(style);
+            }
+        </script>
+    </head>
+    <body data-window="help">
+        <div>
+            <div><span>Shift + F1</span> - toggle overlay</div>
+            <div><span>Shift + F2</span> - toggle roster</div>
+            <div><span>Shift + F3</span> - toggle map</div>
+            <div><span>Shift + F4</span> - toggle setting</div>
+        </div>
+    </body>
+</html>

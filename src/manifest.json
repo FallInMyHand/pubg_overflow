@@ -37,6 +37,14 @@
 				"show_in_taskbar": false,
 				"is_background_page": true
 			},
+			"help": {
+				"file": "windows/help.html",
+				"resizable": true,
+				"size":{
+					"width": 400,
+					"height": 300
+				}
+			},
 			"statistic": {
 				"file":"windows/statistic.html",
 				"transparent":true,
@@ -65,7 +73,7 @@
 			},
 			"settings": {
 				"file": "windows/settings.html",
-				"transparent": false,
+				"transparent": true,
 				"resizable": false,
 				"native_window": true,
 				"show_maximize": false,
@@ -108,13 +116,13 @@
 			}
 		},
 		"hotkeys": {
-			"toggle_roster": {
-				"title": "Toggle roster window",
+			"toggle_overlay": {
+				"title": "Toggle overlay",
 				"action-type": "custom",
 				"default": "Shift+F1"
 			},
-			"toggle_settings": {
-				"title": "Show settings",
+			"toggle_roster": {
+				"title": "Toggle roster window",
 				"action-type": "custom",
 				"default": "Shift+F2"
 			},
@@ -122,6 +130,11 @@
 				"title": "Show map",
 				"action-type": "custom",
 				"default": "Shift+F3"
+			},
+			"toggle_settings": {
+				"title": "Show settings",
+				"action-type": "custom",
+				"default": "Shift+F4"
 			}
 		},
 		"extra-objects": {

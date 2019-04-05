@@ -6,6 +6,6 @@ requirejs.config({
 });
 
 requirejs(['app/utils/events', 'app/controller/map'], function(EventsEmitter, controller) {
-    window.eventBus = new EventsEmitter('roster');
+    window.eventBus = new EventsEmitter('map');
     controller.init(window.eventBus);
 });
