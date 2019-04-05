@@ -1,4 +1,4 @@
-define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDatabase', 'app/model/Overlay'], function(filesystem, arrayUtils, database, Overlay) {
+define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDatabase', 'app/model/Overlay', 'app/model/Roster'], function(filesystem, arrayUtils, database, Overlay, Roster) {
     const items = ['unknown', 'dominated', 'neutral', 'rabbit'];
 
     let userConfig = null,
@@ -17,15 +17,6 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     let game_in_process = false,
         replays_in_process = false;
 
-    let _dead = [];
-
-    let players = {
-        unknown: [],
-        dominated: [],
-        neutral: [],
-        rabbit: []
-    };
-
     let events = {};
     let _roster = {}; // to know names for exit as {}
 
@@ -36,7 +27,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
         map: false
     };
 
-    let overlay;
+    let overlay, roster;
 
     const streaks = [];
 
@@ -49,6 +40,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
         window._showStreaks = () => { console.log(streaks); };
         if (window.overwolf) {
             overlay = new Overlay(overwolf, events);
+            roster = new Roster(overwolf, events);
 
             let startApplication = () => {
                 const readFiles = [
@@ -109,16 +101,22 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             overwolf.games.events.onInfoUpdates2.addListener(function(info) {
                 if (info.feature === FEATURE_PHASE) {
                     if (info.info.game_info.phase === 'loading_screen') {
+                        roster.setState(0);
                         events.trigger('startingMatch', {
                             overlay
                         });
+                    } else if (info.info.game_info.phase === 'freefly') {
+                        roster.setState(1);
+                    } else if (info.info.game_info.phase === 'lobby') {
+                        roster.setState(-1);
+                        triggerUpdatedRoster();
                     }
                 } else if (info.feature === FEATURE_ROSTER) {
                     let match_info = info.info.match_info;
                     Object.keys(match_info).forEach((k) => {
                         if (match_info[k] === '{}') {
                             if (_roster[k]) {
-                                removePlayer(_roster[k]);
+                                roster.remove(_roster[k]);
                                 delete _roster[k];
                             }
                         } else {
@@ -127,7 +125,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                                 addPlayer(o.player);
                                 _roster[k] = o.player;
                             } else {
-                                removePlayer(o.player);
+                                roster.remove(o.player);
                                 if (_roster[k]) {
                                     delete _roster[k];
                                 }
@@ -296,24 +294,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     }
 
     function addPlayer(name) {
-        let level = database.select(name);
-        players[level].push(name);
-    }
-
-    function removePlayer(name) {
-        items.forEach((k) => {
-            let i = players[k].indexOf(name);
-            if (i > -1) {
-                players[k].splice(i, 1);
-
-                /*
-                 if in game mark him as dead
-                 _dead.push({ type: k, name: name });
-                */
-
-                return false;
-            }
-        });
+        roster.add(name);
     }
 
     function empty_stat_log() {
@@ -410,38 +391,13 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     }
 
     function triggerUpdatedRoster() {
-        let all = [];
-        players.unknown.forEach((n) => {
-            all.push({
-                type: 'unknown',
-                name: n
-            });
-        });
-        players.dominated.forEach((n) => {
-            all.push({
-                type: 'dominated',
-                name: n
-            });
-        });
-        players.neutral.forEach((n) => {
-            all.push({
-                type: 'neutral',
-                name: n
-            });
-        });
-        players.rabbit.forEach((n) => {
-            all.push({
-                type: 'rabbit',
-                name: n
-            });
-        });
-
+        console.log(roster.players);
         events.trigger('updatedRoster', {
-            unknown: players.unknown.length,
-            dominated: players.dominated.length,
-            neutral: players.neutral.length,
-            rabbit: players.rabbit.length,
-            all: all.sort(function(a, b) {
+            unknown: roster.players.unknown,
+            dominated: roster.players.dominated,
+            neutral: roster.players.neutral,
+            rabbit: roster.players.rabbit,
+            all: roster.lobby.concat(roster.dead).sort(function(a, b) {
                 if(a.name < b.name) { return -1; }
                 if(a.name > b.name) { return 1; }
                 return 0;

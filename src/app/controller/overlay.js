@@ -1,8 +1,6 @@
 define(function() {
     const items = ['unknown', 'dominated', 'neutral', 'rabbit'];
 
-    reset();
-
     return {
         init
     };
@@ -19,15 +17,6 @@ define(function() {
                 }
             });
         }
-    }
-
-    function reset() {
-        values = {
-            dominated: 0,
-            unknown: 0,
-            neutral: 0,
-            rabbit: 0
-        };
     }
 
     function update(obj) {
