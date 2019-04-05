@@ -39,7 +39,7 @@ define(['app/utils/events', 'app/services/playerDatabase'], function(EventsEmitt
             if (item) {
                 this.players[item.type]--;
                 let d = this.lobby.splice(this.lobby.indexOf(item), 1)[0];
-                if (this.state > -1) {
+                if (this.state > 0) {
                     d.alive = false;
                     this.dead.push(d);
                 }
@@ -48,6 +48,9 @@ define(['app/utils/events', 'app/services/playerDatabase'], function(EventsEmitt
 
         setState(v) {
             this.state = v;
+            if (v === -1) {
+                this.reset();
+            }
         }
     }
 

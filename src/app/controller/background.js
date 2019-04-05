@@ -199,7 +199,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                             let ks_amount = userConfig.settings.ks_amount,
                                 ds_amount = userConfig.settings.ds_amount;
 
-                            let killed = all.filter(t => t.killer.accountId === accId);
+                            let killed = all.filter(t => t.killer.accountId === accId && t.victim.accountId !== accId);
                             killed.forEach((kill_log) => {
                                 let n = kill_log.victim.name;
                                 if (!userStat.players[n]) {
@@ -212,7 +212,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                                     streaks.push([1, userStat.players[n].ks - ks_amount], n);
                                 }
                             });
-                            let killedBy = all.filter(t => t.victim.accountId === accId);
+                            let killedBy = all.filter(t => t.victim.accountId === accId && t.killer.accountId !== accId);
                             killedBy.forEach((death_log) => {
                                 let n = death_log.killer.name;
                                 if (!userStat.players[n]) {
@@ -391,8 +391,12 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
     function triggerUpdatedRoster() {
         let a = roster.lobby.concat(roster.dead).sort(function(a, b) {
-            if(a.name < b.name) { return -1; }
-            if(a.name > b.name) { return 1; }
+            let aa = a.name.toLowerCase(),
+                bb = b.name.toLowerCase();
+
+            if (aa < bb) { return -1; }
+            if (aa > bb) { return 1; }
+
             return 0;
         });
         let favorite = [];
