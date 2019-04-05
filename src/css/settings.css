@@ -73,3 +73,20 @@ div[data-role="status"].error::after {
   color: #434343;
   margin-top: 8px;
 }
+.favorite-list img {
+  width: 24px;
+  height: 24px;
+}
+.favorite-list span {
+  width: 120px;
+  overflow: hidden;
+}
+.favorite-list button {
+  width: 24px;
+  height: 24px;
+  padding: 3px 5px;
+  font-size: 14px;
+}
+.favorite-add input {
+  width: 120px;
+}

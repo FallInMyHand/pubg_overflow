@@ -120,6 +120,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                 } else {
                     //console.log('info update', info);
                 }
+                if (info.feature !== FEATURE_ROSTER)
                 console.log('all info', info);
             });
             attachOverwolfEvents();
