@@ -69,9 +69,15 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     if (!userConfig.settings) {
                         userConfig.settings = {
                             ks_amount: 2,
-                            ds_amount: 2
+                            ds_amount: 2,
+                            favorite: []
                         };
                     }
+
+                    userConfig.settings.favorite = [{
+                        name: 'Hailrake',
+                        image: 'https://steamuserimages-a.akamaihd.net/ugc/957461211380538862/51D6DE755BF6285BAE9DB34EEB31832EEFE4171D/'
+                    }]
 
                     startApplication();
                 });
@@ -89,6 +95,13 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
             overwolf.windows.obtainDeclaredWindow('overlay', function(event) {
                 overlay.show().then(() => {
+                    console.log('initOverlay');
+                    setTimeout(() => {
+                        events.trigger('initOverlay', {
+                            overlay
+                        });
+                    }, 500);
+
                     overlay.hide();
                 });
             });
@@ -96,7 +109,9 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             overwolf.games.events.onInfoUpdates2.addListener(function(info) {
                 if (info.feature === FEATURE_PHASE) {
                     if (info.info.game_info.phase === 'loading_screen') {
-                        events.trigger('startingMatch');
+                        events.trigger('startingMatch', {
+                            overlay
+                        });
                     }
                 } else if (info.feature === FEATURE_ROSTER) {
                     let match_info = info.info.match_info;
@@ -122,8 +137,11 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     triggerUpdatedRoster();
                 } else if (info.feature === FEATUR_KILL) {
                     let match_info = info.info.match_info;
-                    console.log('kill total damage', match_info.total_damage_dealt);
-                    //console.log('info update', info);
+                    if (match_info.total_damage_dealt !== undefined) {
+                        if (overlay) {
+                            overlay.setStat('total_damage_dealt', parseFloat(match_info.total_damage_dealt));
+                        }
+                    }
                 } else {
                     //console.log('info update', info);
                 }
@@ -151,6 +169,10 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                         });
                     }
                 });
+            });
+
+            events.on('overlayReady', (data) => {
+                data.callback(overlay);
             });
         }
     }
@@ -423,7 +445,8 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                 if(a.name < b.name) { return -1; }
                 if(a.name > b.name) { return 1; }
                 return 0;
-            })
+            }),
+            overlay
         });
     }
 

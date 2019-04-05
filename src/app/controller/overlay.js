@@ -9,9 +9,14 @@ define(function() {
 
     function init(events) {
         if (window.overwolf) {
-            overwolf.windows.getMainWindow().eventBus.on('updatedRoster', function(obj) {
-                console.log('event', 'updatedRoster');
+            let mainEventBus = overwolf.windows.getMainWindow().eventBus;
+            mainEventBus.on('updatedRoster', function(obj) {
                 update(obj);
+            });
+            mainEventBus.trigger('overlayReady', {
+                callback: (overlay) => {
+                    initOverlayEvents(overlay);
+                }
             });
         }
     }
@@ -29,6 +34,13 @@ define(function() {
         let toolbar = document.querySelector('.toolbar');
         items.forEach((k) => {
             toolbar.querySelector(`.item[data-type="${k}"] .value`).innerHTML = obj[k];
+        });
+    }
+
+    function initOverlayEvents(overlay) {
+        let dmg_node = document.querySelector('.status-bar .value');
+        overlay.events.on('statChanged', (e) => {
+            dmg_node.innerHTML = e.value;
         });
     }
 });

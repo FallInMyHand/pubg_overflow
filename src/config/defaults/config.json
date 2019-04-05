@@ -5,6 +5,7 @@
     },
     "settings": {
         "ks_amount": 2,
-        "ds_amount": 2
+        "ds_amount": 2,
+        "favorite": []
     }
 }

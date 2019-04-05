@@ -1,12 +1,16 @@
-define(function() {
+define(['app/utils/events'], function(EventsEmitter) {
     class Overlay {
-        constructor(platform, events) {
+        constructor(platform, eventBus) {
             this.platform = platform;
+            this.events = new EventsEmitter('OverlayModel');
             this._status = true;
             this._current_visible = false;
-            this._in_match = true;
+            this._in_match = false;
+            this.stat = {
+                total_damage_dealt: 0
+            };
 
-            events.on('startingMatch', () => {
+            eventBus.on('startingMatch', () => {
                 this._in_match = true;
                 if (this._status && !this._current_visible) {
                     this.show().then(() => {
@@ -14,13 +18,14 @@ define(function() {
                     });
                 }
             });
-            events.on('matchEnd', () => {
+            eventBus.on('matchEnd', () => {
                 this._in_match = false;
                 if (this._current_visible) {
                     this.hide().then(() => {
                         this._current_visible = false;
-                    })
+                    });
                 }
+                this.setStat('total_damage_dealt', 0);
             });
         }
 
@@ -60,6 +65,17 @@ define(function() {
                 if (this._current_visible) {
                     this.hide();
                 }
+            }
+        }
+
+        setStat(key, value) {
+            this.stat[key] = value;
+
+            if (key === 'total_damage_dealt') {
+                this.events.trigger('statChanged', {
+                    key,
+                    value: Math.floor(value)
+                });
             }
         }
     }
