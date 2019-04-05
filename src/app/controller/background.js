@@ -28,7 +28,12 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
     let events = {};
     let _roster = {}; // to know names for exit as {}
-    let _roster_shown = false;
+
+    const windows = {
+        roster: false,
+        settings: false,
+        map: false
+    };
 
     const streaks = [];
 
@@ -299,13 +304,13 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
     function applyHotkeys() {
         overwolf.settings.registerHotKey('toggle_roster', (arg) => {
-            if (arg.status == "success") {
-                if (!_roster_shown) {
+            if (arg.status === 'success') {
+                if (!windows.roster) {
                     overwolf.windows.obtainDeclaredWindow('roster', (result) => {
                         if (result.status === 'success') {
                             overwolf.windows.restore('roster', (r) => {
                                 if (r.status === 'success') {
-                                    _roster_shown = true;
+                                    windows.roster = true;
                                     setTimeout(() => {
                                         triggerUpdatedRoster();
                                     }, 500);
@@ -315,37 +320,64 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     });
                 } else {
                     overwolf.windows.close('roster', () => {
-                        _roster_shown = false;
+                        windows.roster = false;
                     });
                 }
             }
         });
 
-        overwolf.settings.registerHotKey('settings', (arg) => {
+        overwolf.settings.registerHotKey('toggle_settings', (arg) => {
             if (arg.status === 'success') {
-                overwolf.windows.obtainDeclaredWindow('settings', function(event) {
-                    overwolf.windows.restore('settings', function(result) {
-                        if (result.status === 'success') {
-                            setTimeout(function() {
-                                if (userConfig) {
-                                    overwolf.windows.changeSize('settings', 400, 700, () => {
-                                        setTimeout(() => {
-                                            eventBus.trigger('settings', userConfig);
-                                        }, 500);
-                                    });
-                                } else {
-                                    overwolf.windows.changeSize('settings', 400, 200, () => {
-                                        setTimeout(() => {
-                                            eventBus.trigger('installation');
-                                        }, 500);
-                                    });
-                                }
-                            });
-                        }
+                if (!windows.settings) {
+                    overwolf.windows.obtainDeclaredWindow('settings', function(event) {
+                        overwolf.windows.restore('settings', function(result) {
+                            if (result.status === 'success') {
+                                setTimeout(function() {
+                                    if (userConfig) {
+                                        overwolf.windows.changeSize('settings', 400, 700, () => {
+                                            setTimeout(() => {
+                                                eventBus.trigger('settings', userConfig);
+                                            }, 500);
+                                        });
+                                    } else {
+                                        overwolf.windows.changeSize('settings', 400, 200, () => {
+                                            setTimeout(() => {
+                                                eventBus.trigger('installation');
+                                            }, 500);
+                                        });
+                                    }
+                                });
+                            }
+                        });
                     });
-                });
+                } else {
+                    overwolf.windows.close('settings', () => {
+                        windows.settings = false;
+                    });
+                }
             }
         });
+
+        overwolf.settings.registerHotKey('toggle_map', (arg) => {
+            if (arg.status === 'success') {
+                if (!windows.map) {
+                    overwolf.windows.obtainDeclaredWindow('map', function(event) {
+                        overwolf.windows.restore('map', function(result) {
+                            if (result.status === 'success') {
+                                windows.map = true;
+                                setTimeout(() => {
+                                    eventBus.trigger('map');
+                                }, 500);
+                            }
+                        });
+                    });
+                } else {
+                    overwolf.windows.close('map', () => {
+                        windows.map = false;
+                    });
+                }
+            }
+        })
     }
 
     function triggerUpdatedRoster() {

@@ -92,6 +92,19 @@
 					"top": 150,
 					"left": 20
 				}
+			},
+			"map": {
+				"file": "windows/map.html",
+				"transparent": false,
+				"resizable": true,
+				"size": {
+					"width": 1920,
+					"height": 1080
+				},
+				"start_position": {
+					"top": 0,
+					"left": 0
+				}
 			}
 		},
 		"hotkeys": {
@@ -100,10 +113,15 @@
 				"action-type": "custom",
 				"default": "Shift+F1"
 			},
-			"settings": {
+			"toggle_settings": {
 				"title": "Show settings",
 				"action-type": "custom",
 				"default": "Shift+F2"
+			},
+			"toggle_map": {
+				"title": "Show map",
+				"action-type": "custom",
+				"default": "Shift+F3"
 			}
 		},
 		"extra-objects": {
