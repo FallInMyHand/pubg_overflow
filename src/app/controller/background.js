@@ -1,6 +1,4 @@
-define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDatabase', 'app/model/Overlay', 'app/model/Roster'], function(filesystem, arrayUtils, database, Overlay, Roster) {
-    const items = ['unknown', 'dominated', 'neutral', 'rabbit'];
-
+define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDatabase', 'app/model/Overlay', 'app/model/Roster', 'app/model/Map'], function(filesystem, arrayUtils, database, Overlay, Roster, Map) {
     let userConfig = null,
         processedMatches = null,
         userStat = null;
@@ -27,7 +25,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
         map: false
     };
 
-    let overlay, roster;
+    let overlay, roster, map;
 
     const streaks = [];
 
@@ -41,6 +39,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
         if (window.overwolf) {
             overlay = new Overlay(overwolf, events);
             roster = new Roster(overwolf, events);
+            map = new Map(overwolf, events);
 
             let startApplication = () => {
                 const readFiles = [
@@ -68,7 +67,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
                     userConfig.settings.favorite = [{
                         name: 'Hailrake',
-                        image: 'https://steamuserimages-a.akamaihd.net/ugc/957461211380538862/51D6DE755BF6285BAE9DB34EEB31832EEFE4171D/'
+                        icon: 'https://steamuserimages-a.akamaihd.net/ugc/957461211380538862/51D6DE755BF6285BAE9DB34EEB31832EEFE4171D/'
                     }]
 
                     startApplication();
@@ -391,17 +390,30 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     }
 
     function triggerUpdatedRoster() {
-        console.log(roster.players);
+        let a = roster.lobby.concat(roster.dead).sort(function(a, b) {
+            if(a.name < b.name) { return -1; }
+            if(a.name > b.name) { return 1; }
+            return 0;
+        });
+        let favorite = [];
+        let f_names = userConfig.settings.favorite.map(f => f.name);
+        a.filter(item => f_names.indexOf(item.name) > -1).forEach(item => {
+            let s = userConfig.settings.favorite.find(v => v.name === item.name);
+            favorite.push({
+                name: item.name,
+                type: item.type,
+                alive: item.name,
+                icon: s.icon
+            });
+        });
+
         events.trigger('updatedRoster', {
             unknown: roster.players.unknown,
             dominated: roster.players.dominated,
             neutral: roster.players.neutral,
             rabbit: roster.players.rabbit,
-            all: roster.lobby.concat(roster.dead).sort(function(a, b) {
-                if(a.name < b.name) { return -1; }
-                if(a.name > b.name) { return 1; }
-                return 0;
-            }),
+            all: a,
+            favorite: favorite,
             overlay
         });
     }

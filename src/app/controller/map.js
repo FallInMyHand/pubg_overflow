@@ -1,5 +1,14 @@
 define(function() {
-    const REQUIRED_FEATURES = ['me', 'map', 'match'];
+    const FEATURE_MAP = 'map';
+    const REQUIRED_FEATURES = ['me', FEATURE_MAP, 'match'];
+
+    let a = {
+        "Desert_Main": "Miramar",
+        "DihorOtok_Main": "Vikendi",
+        "Erangel_Main": "Erangel",
+        "Range_Main": "Camp Jackal",
+        "Savage_Main": "Sanhok"
+    };
 
     const map = {
         init
@@ -11,6 +20,9 @@ define(function() {
         if (window.overwolf) {
             overwolf.games.events.onInfoUpdates2.addListener(function(info) {
                 console.log('all info', info);
+                if (info.feature === FEATURE_MAP) {
+
+                }
             });
 
             attachOverwolfEvents();
@@ -33,5 +45,9 @@ define(function() {
         eventsInfo.events.forEach((event) => {
             console.log('another - event', event);
         });
+    }
+
+    function loadMap(name) {
+        console.log('loading map', name);
     }
 });

@@ -1,6 +1,8 @@
 define(function() {
     const items = ['unknown', 'dominated', 'neutral', 'rabbit'];
 
+    let template = (d) => `<span class="icon" data-status="${d.alive ? 'alive' : 'dead'}" style="background-image: url(${d.icon});"></span>`;
+
     return {
         init
     };
@@ -24,6 +26,17 @@ define(function() {
         items.forEach((k) => {
             toolbar.querySelector(`.item[data-type="${k}"] .value`).innerHTML = obj[k];
         });
+
+        let icons = document.querySelector('.roster-icons');
+        if (obj.favorite.length > 0) {
+            let h = '';
+            obj.favorite.forEach(f => {
+                h += template(f);
+            });
+            icons.innerHTML = h;
+        } else {
+            icons.innerHTML = '';
+        }
     }
 
     function initOverlayEvents(overlay) {
