@@ -15,7 +15,8 @@ define(function() {
                 .map(n => {
                     return {
                         name: n,
-                        type: cls[Math.floor(Math.random() * 3)]
+                        type: cls[Math.floor(Math.random() * 3)],
+                        alive: Math.random() > 0.2
                     };
                 });
             render(all);
@@ -27,7 +28,7 @@ define(function() {
         node.innerHTML = '';
         let html = '';
         data.forEach((p) => {
-            html += `<div class="player"><div class="icon ${p.type}"></div>${p.name}</div>`;
+            html += `<div class="player ${p.alive ? '' : 'dead'}"><div class="icon ${p.type}"></div>${p.name}</div>`;
         });
         node.innerHTML = html;
     }
