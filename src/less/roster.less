@@ -42,7 +42,7 @@ body {
 
     .player {
         position: relative;
-        
+        width: 22%;
         background: rgba(255,255,255,0.3);
         padding: 3px 6px;
         margin: 1px;
@@ -67,12 +67,26 @@ body {
                 content: "";
                 display: block;
                 position: absolute;
+                height: 20px;
+                width: 20px;
+                background-color: red;
+                border-radius: 50%;
+                right: -10px;
+                bottom: -9px;
+                box-shadow: -13px -1px 0 -6px red;
+            }
+
+            &::before {
+                content: "";
+                display: block;
+                position: absolute;
                 height: 5px;
-                width: 25px;
-                background-color: #000;
-                right: -6px;
-                bottom: 4px;
-                transform: rotate(-45deg;)
+                width: 5px;
+                background-color: red;
+                border-radius: 50%;
+                right: 2px;
+                top: 5px;
+                box-shadow: -7px 7px 0 -1px red;
             }
 
             .icon {
