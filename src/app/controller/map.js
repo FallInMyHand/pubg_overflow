@@ -18,14 +18,13 @@ define(function() {
 
     function init(events) {
         if (window.overwolf) {
-
+            let mainEventBus = overwolf.windows.getMainWindow().eventBus;
+            mainEventBus.trigger('mapReady', {
+                callback: (map) => {
+                    initEvents(map);
+                }
+            });
         }
-
-        mainEventBus.trigger('mapReady', {
-            callback: (map) => {
-                initEvents(map);
-            }
-        });
     }
 
     function loadMap(name) {
