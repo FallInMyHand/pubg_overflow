@@ -5,9 +5,10 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
     const FEATURE_PHASE = 'phase';
     const FEATURE_ROSTER = 'roster';
-    const FEATUR_KILL = 'kill';
+    const FEATURE_KILL = 'kill';
+    const FEATURE_LOCATION = 'location';
 
-    const REQUIRED_FEATURES = ['me', FEATURE_PHASE, 'map', FEATURE_ROSTER, FEATUR_KILL, 'match'];
+    const REQUIRED_FEATURES = ['me', FEATURE_PHASE, 'map', FEATURE_ROSTER, FEATURE_KILL, 'match', FEATURE_LOCATION];
 
     const REGISTER_RETRY_TIMEOUT = 10000;
 
@@ -22,7 +23,8 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
         overlay: true,
         roster: false,
         settings: false,
-        map: false
+        map: false,
+        help: false
     };
 
     let overlay, roster, map;
@@ -86,7 +88,6 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
             overwolf.windows.obtainDeclaredWindow('overlay', function(event) {
                 overlay.show().then(() => {
-                    console.log('initOverlay');
                     setTimeout(() => {
                         events.trigger('initOverlay', {
                             overlay
@@ -101,14 +102,19 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                 if (info.feature === FEATURE_PHASE) {
                     if (info.info.game_info.phase === 'loading_screen') {
                         roster.setState(0);
+                        map.setState(0);
                         events.trigger('startingMatch', {
                             overlay
                         });
                     } else if (info.info.game_info.phase === 'freefly') {
                         roster.setState(1);
+                        map.setState(1);
                     } else if (info.info.game_info.phase === 'lobby') {
                         roster.setState(-1);
+                        map.setState(-1);
                         triggerUpdatedRoster();
+                    } else if (info.info.game_info.phase === 'landed') {
+                        map.setState(2);
                     }
                 } else if (info.feature === FEATURE_ROSTER) {
                     let match_info = info.info.match_info;
@@ -132,15 +138,16 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                         }
                     });
                     triggerUpdatedRoster();
-                } else if (info.feature === FEATUR_KILL) {
+                } else if (info.feature === FEATURE_KILL) {
                     let match_info = info.info.match_info;
                     if (match_info.total_damage_dealt !== undefined) {
                         if (overlay) {
                             overlay.setStat('total_damage_dealt', parseFloat(match_info.total_damage_dealt));
                         }
                     }
-                } else {
-                    //console.log('info update', info);
+                } else if (info.feature === FEATURE_LOCATION) {
+                    map.moveTo(JSON.parse(info.info.game_info.location));
+                    console.log('location', info);
                 }
                 if (info.feature !== FEATURE_ROSTER)
                 console.log('all info', info);
@@ -170,6 +177,25 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
             events.on('overlayReady', (data) => {
                 data.callback(overlay);
+            });
+
+            events.on('mapReady', (data) => {
+                data.callback(map);
+            });
+
+            events.on('requestHelp', function() {
+                overwolf.windows.obtainDeclaredWindow('help', function(event) {
+                    if (event.status === 'success') {
+                        overwolf.windows.restore('help', function(result) {
+                            if (result.status === 'success') {
+                                windows.help = true;
+                                setTimeout(() => {
+                                    eventBus.trigger('help');
+                                }, 500);
+                            }
+                        });
+                    }
+                });
             });
         }
     }
@@ -341,6 +367,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     overwolf.windows.obtainDeclaredWindow('settings', function(event) {
                         overwolf.windows.restore('settings', function(result) {
                             if (result.status === 'success') {
+                                windows.settings = true;
                                 setTimeout(function() {
                                     if (userConfig) {
                                         overwolf.windows.changeSize('settings', 400, 700, () => {
@@ -375,7 +402,9 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                             if (result.status === 'success') {
                                 windows.map = true;
                                 setTimeout(() => {
-                                    eventBus.trigger('map');
+                                    eventBus.trigger('map', {
+                                        map: map
+                                    });
                                 }, 500);
                             }
                         });

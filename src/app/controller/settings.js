@@ -49,6 +49,7 @@ define(['app/services/pubg'], function(pubgapi) {
                         }) ();
                     }
                 });
+                addHelp(eventBus);
             });
 
             eventBus.on('settings', function() {
@@ -64,7 +65,15 @@ define(['app/services/pubg'], function(pubgapi) {
                         eventBus.trigger('resetApp');
                     }
                 });
+                addHelp(eventBus);
             });
         }
+    }
+
+    function addHelp(eventBus) {
+        let help_button = document.querySelector('#help');
+        help_button.addEventListener('click', function(event) {
+            eventBus.trigger('requestHelp');
+        });
     }
 });

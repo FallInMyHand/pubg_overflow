@@ -18,36 +18,29 @@ define(function() {
 
     function init(events) {
         if (window.overwolf) {
-            overwolf.games.events.onInfoUpdates2.addListener(function(info) {
-                console.log('all info', info);
-                if (info.feature === FEATURE_MAP) {
 
-                }
-            });
-
-            attachOverwolfEvents();
         }
-    }
 
-    function attachOverwolfEvents() {
-        overwolf.games.events.setRequiredFeatures(REQUIRED_FEATURES, function(response) {
-            if (response.status === 'error') {
-                setTimeout(attachOverwolfEvents, REGISTER_RETRY_TIMEOUT);
-            } else if (response.status === 'success') {
-                overwolf.games.events.onNewEvents.removeListener(_handleGameEvent);
-                overwolf.games.events.onNewEvents.addListener(_handleGameEvent);
+        mainEventBus.trigger('mapReady', {
+            callback: (map) => {
+                initEvents(map);
             }
-        });
-
-    }
-
-    function _handleGameEvent(eventsInfo) {
-        eventsInfo.events.forEach((event) => {
-            console.log('another - event', event);
         });
     }
 
     function loadMap(name) {
         console.log('loading map', name);
+    }
+
+    function initEvents(map) {
+        let you = document.querySelector('#you');
+        map.events.on('move', (event) => {
+            console.log('moving', event.point);
+            let x = Math.floor(event.point.x / 8),
+                y = Math.floor(event.point.y / 8);
+
+            you.style.top = `${y}px`;
+            you.style.left = `${x}px`;
+        })
     }
 });
