@@ -17,10 +17,36 @@
 }
 body[data-window="overlay"],
 body[data-window="roster"] {
-  animation-name: background_test;
-  animation-duration: 40s;
-  animation-iteration-count: infinite;
+  background-image: url(../images/dev/erangel_sample.png);
 }
 body[data-window="settings"] .part {
   display: block;
+}
+body[data-window="roster"] .container {
+  position: absolute;
+  left: 240px;
+  top: 200px;
+  width: 520px;
+  height: 700px;
+  border: 2px solid black;
+}
+body[data-window="roster"] .container .top {
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 30px;
+  background-image: url(../images/dev/window-toolbar.png);
+  position: absolute;
+  background-position-x: 100%;
+  background-repeat: no-repeat;
+  background-color: black;
+}
+body[data-window="roster"] .container .content {
+  background: rgba(86, 86, 86, 0.6);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 30px;
+  bottom: 0;
+  overflow: auto;
 }

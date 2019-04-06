@@ -3,6 +3,19 @@ body {
   padding: 0;
   margin: 0;
 }
+body[data-window="roster"] {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+body[data-window="roster"]::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+body[data-window="roster"]::-webkit-scrollbar {
+  width: 6px;
+  background-color: transparent;
+}
+body[data-window="roster"]::-webkit-scrollbar-thumb {
+  background-color: #CCC;
+}
 .h1-title {
   color: #ffffff;
 }
@@ -18,19 +31,23 @@ body {
 }
 #roster .player {
   position: relative;
-  width: 140px;
-  background: gray;
-  padding: 4px 8px;
-  margin: 3px;
-  border: 1px solid #ffffff;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 3px 6px;
+  margin: 1px;
   font-family: Arial, Helvetica, sans-serif;
   color: #ffffff;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }
+#roster .player:nth-last-child(1),
+#roster .player:nth-last-child(2),
+#roster .player:nth-last-child(3) {
+  flex-grow: 0;
+}
 #roster .player.dead {
   color: #AAA;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 #roster .player.dead::after {
   content: "";

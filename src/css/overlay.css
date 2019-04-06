@@ -69,6 +69,26 @@ body {
   width: 150px;
   margin-left: 10px;
 }
+.status-bar .info .with-semicolon {
+  position: relative;
+  margin-right: 6px;
+}
+.status-bar .info .with-semicolon::before,
+.status-bar .info .with-semicolon::after {
+  content: "";
+  position: absolute;
+  display: block;
+  width: 3px;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.8);
+  right: -5px;
+}
+.status-bar .info .with-semicolon::before {
+  top: 15px;
+}
+.status-bar .info .with-semicolon::after {
+  top: 25px;
+}
 .status-bar .roster-icons {
   display: inline-block;
   margin-left: 20px;
