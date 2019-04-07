@@ -27,7 +27,7 @@ define(function() {
         node.innerHTML = '';
         let html = '';
         data.forEach((p) => {
-            html += `<div class="player"><div class="icon ${p.type}"></div>${p.name}</div>`;
+            html += `<div class="player"><div class="icon ${p.type}"></div><span>${p.name}</span></div>`;
         });
         node.innerHTML = html;
     }
