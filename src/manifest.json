@@ -39,10 +39,10 @@
 			},
 			"help": {
 				"file": "windows/help.html",
-				"resizable": true,
+				"resizable": false,
 				"size":{
-					"width": 800,
-					"height": 600
+					"width": 830,
+					"height": 710
 				}
 			},
 			"statistic": {

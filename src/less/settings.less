@@ -8,8 +8,9 @@ html, body {
     margin: 0;
 }
 
-body {
-    background: #666666;
+body[data-window="settings"] {
+    background: rgba(128,128,128,1);
+    padding: 4px;
 }
 
 .form {
@@ -103,5 +104,17 @@ div[data-role="status"] {
 .favorite-add {
     input {
         width: 120px;
+    }
+}
+
+.title-row {
+    max-width: 400px;
+    text-align: right;
+
+    .title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-right: 11px;
+        color: #e3e3e3;
     }
 }

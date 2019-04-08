@@ -53,6 +53,7 @@ body[data-window="roster"]::-webkit-scrollbar-thumb {
 #roster .player {
   position: relative;
   width: 32%;
+  max-width: 250px;
   background: rgba(255, 255, 255, 0.3);
   padding: 3px 6px;
   margin: 1px 0 1px 1%;
@@ -78,16 +79,12 @@ body[data-window="roster"]::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.3);
 }
 #roster .player.dead::after {
-  content: "";
+  content: "DEAD";
   display: block;
   position: absolute;
-  width: 0;
-  height: 0;
-  border: 8px solid transparent;
-  border-right: 8px solid red;
-  border-bottom: 8px solid red;
   bottom: 0;
   right: 0;
+  color: rgba(255, 0, 0, 0.6);
 }
 #roster .player.dead .icon {
   opacity: 0.5;

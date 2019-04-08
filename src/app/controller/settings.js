@@ -66,6 +66,15 @@ define(['app/services/pubg'], function(pubgapi) {
                     }
                 });
                 addHelp(eventBus);
+
+                let save = document.querySelector('#save');
+                save.addEventListener('click', function(event) {
+                });
+
+                let close = document.querySelector('#close');
+                close.addEventListener('click', function(event) {
+                    overwolf.windows.close('settings');
+                });
             });
         }
     }

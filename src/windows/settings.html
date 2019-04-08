@@ -19,6 +19,8 @@
         </script>
     </head>
     <body data-window="settings">
+        <div class="title-row"><label class="form-label title">Help</label> <button id="help"> ?</button></div>
+        <hr>
         <div class="form">
             <div id="installation" class="part">
                 <div class="form-row">
@@ -36,15 +38,19 @@
                     <input readonly value="Read Only" type="text">
                     <button id="clear" class="reset">Reset</button>
                 </div>
+                <hr>
+                <div><h2>Streak</h2></div>
                 <div class="form-row">
-                    <label for="ks">Kill streak</label> <input id="ks" type="number" step="1" min="2">
-                </div>
-                <div class="form-row">
-                    <label for="ds">Death Streak</label> <input id="ds" type="number" step="1" min="2">
+                    <div class="form-row-half">
+                        <label for="ks">Kill streak</label> <input id="ks" type="number" value="2" step="1" min="2" readonly>
+                    </div>
+                    <div class="form-row-half">
+                        <label for="ds">Death Streak</label> <input id="ds" type="number" value="2" step="1" min="2" readonly>
+                    </div>
                 </div>
                 <hr>
                 <div class="form-row">
-                    Favorite List
+                    <h2>Favorite List</h2>
                 </div>
                 <div>
                     <div class="form-row">
@@ -63,10 +69,10 @@
             </div>
             <hr>
             <div class="form-row">
-                Show on overlay
+                <h2>Show on overlay</h2>
             </div>
             <div class="form-row">
-                <select>
+                <select readonly>
                     <option value="damage" selected>Damage</option>
                 </select>
             </div>
@@ -75,7 +81,5 @@
                 <button id="save">Save</button> <button id="close">close</button>
             </div>
         </div>
-        <hr>
-        <div><button id="help"> ?</button> <label class="form-label">Help</label></div>
     </body>
 </html>

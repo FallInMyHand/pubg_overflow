@@ -28,7 +28,25 @@ input[type=text] {
   }
 
   &:read-only {
-    color: yellow;
+    color: dodgerblue;
+  }
+}
+
+input[type="number"] {
+  height: 36px;
+  border: 2px solid #DDD;
+  background-color: rgba(0,0,0,0.5);
+  color: #EEE;
+  font-size: 22px;
+  width: 50px;
+  padding: 10px 0px 10px 4px;
+
+  &::placeholder {
+    text-transform: uppercase;
+  }
+
+  &:read-only {
+    color: dodgerblue;
   }
 }
 
@@ -175,6 +193,11 @@ button {
 .form-row {
   &>* {
     vertical-align: middle;
+  }
+
+  .form-row-half {
+    width: 50%;
+    float: left;
   }
 }
 
