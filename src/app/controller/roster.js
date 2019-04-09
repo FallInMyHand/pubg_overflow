@@ -1,13 +1,27 @@
 define(function() {
+    let settings = localStorage.getItem('roster') ? JSON.parse(localStorage.getItem('roster')) : { view: 'all', transparent: true };
+    let data;
+
     return {
         init
     };
 
     function init(events) {
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            ready();
+        } else {
+            document.addEventListener('DOMContentLoaded', function(event) {
+                ready();
+            });
+        }
+    }
+
+    function ready() {
         if (window.overwolf) {
             let eventBus = overwolf.windows.getMainWindow().eventBus;
             eventBus.on('updatedRoster', function(data) {
-                render(data.all);
+                data = data.all;
+                render();
             });
         } else {
             let cls = ['neutral', 'dominated', 'rabbit', 'unknown'];
@@ -19,17 +33,63 @@ define(function() {
                         alive: Math.random() > 0.2
                     };
                 });
-            render(all);
+            data = all;
+            render();
         }
+
+        initUI();
     }
 
-    function render(data) {
+    function render() {
+        _d = data;
         let node = document.querySelector('#roster');
         node.innerHTML = '';
         let html = '';
-        data.forEach((p) => {
-            html += `<div class="player ${p.alive ? '' : 'dead'}"><div class="icon ${p.type}"></div><span>${p.name}</span></div>`;
-        });
+        if (_d) {
+            if (settings.view === 'alive') {
+                _d = _d.filter(v => v.alive);
+            } else if (settings.view === 'dead') {
+                _d = _d.filter(v => !v.alive);
+            }
+            _d.forEach((p) => {
+                html += `<div class="player ${p.alive ? '' : 'dead'}"><div class="icon ${p.type}"></div><span>${p.name}</span></div>`;
+            });
+        }
         node.innerHTML = html;
+    }
+
+    function initUI() {
+        let body = document.querySelector('body');
+        if (settings.transparent) {
+            body.classList.add('transparent');
+        }
+
+        let is_transparent = document.querySelector('#transparent');
+        if (settings.transparent) {
+            is_transparent.checked = true;
+        }
+        document.querySelector(`[name="view"][value="${settings.view}"]`).checked = true;
+        is_transparent.addEventListener('change', function(e) {
+            settings.transparent = this.checked;
+            if (settings.transparent) {
+                body.classList.add('transparent');
+            } else {
+                body.classList.remove('transparent');
+            }
+            saveSettings();
+        });
+
+        let radio = document.querySelectorAll('input[name="view"]');
+        radio.forEach((r) => {
+            r.addEventListener('change', function() {
+                settings.view = this.value;
+                render();
+                saveSettings();
+            });
+        });
+    }
+
+    function saveSettings() {
+        localStorage.setItem('roster', JSON.stringify(settings));
     }
 });

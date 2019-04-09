@@ -95,6 +95,16 @@ div[data-role="status"].error::after {
   max-width: 400px;
   text-align: right;
 }
+.title-row .left {
+  float: left;
+  padding-left: 4px;
+}
+.title-row .right {
+  float: right;
+}
+.title-row .clear {
+  clear: both;
+}
 .title-row .title {
   font-size: 24px;
   font-weight: 600;

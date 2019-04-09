@@ -8,7 +8,8 @@ body {
     font-family: Teko;
 
     &[data-window="roster"] {
-        background-color: rgba(0,0,0,0.5);
+        background-color: #868686;
+        // need gradient image
         &::-webkit-scrollbar-track {
             //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
             background-color: transparent;
@@ -22,6 +23,10 @@ body {
         &::-webkit-scrollbar-thumb {
             background-color: #CCC;
         }
+
+        &.transparent {
+            background-color: rgba(0,0,0,0.5);
+        }
     }
 }
 
@@ -34,7 +39,7 @@ body {
     align-items: flex-end;
 
     h1 {
-        margin: 3px 4px;
+        margin: 3px 4px 3px 15px;
         text-shadow: 1px 1px 1px #000;
         height: 36px;
         flex-grow: 2;
