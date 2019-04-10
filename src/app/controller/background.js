@@ -197,6 +197,10 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     }
                 });
             });
+
+            events.on('saveSettings', function(data) {
+                console.log('want save this', data);
+            });
         }
     }
 

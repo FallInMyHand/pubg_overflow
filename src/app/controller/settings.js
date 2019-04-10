@@ -1,4 +1,6 @@
 define(['app/services/pubg'], function(pubgapi) {
+    let settings_data = null;
+
     return {
         init
     };
@@ -52,9 +54,12 @@ define(['app/services/pubg'], function(pubgapi) {
                 addHelp(eventBus);
             });
 
-            eventBus.on('settings', function() {
+            eventBus.on('settings', function(event) {
+                settings_data = JSON.parse(JSON.stringify(event));
                 let settings = document.querySelector('#settings');
                 settings.style.display = 'block';
+
+                document.querySelector('#step2-username').value = settings_data.username;
 
                 let clear = settings.querySelector('#clear');
                 clear.addEventListener('click', function() {
@@ -69,12 +74,31 @@ define(['app/services/pubg'], function(pubgapi) {
 
                 let save = document.querySelector('#save');
                 save.addEventListener('click', function(event) {
+                    eventBus.trigger('saveSettings', settings_data.settings);
                 });
 
                 let close = document.querySelector('#close');
                 close.addEventListener('click', function(event) {
                     overwolf.windows.close('settings');
                 });
+
+                let favorite_add = document.querySelector('#favorite-add');
+                favorite_add.addEventListener('click', function() {
+                    let icon_node = document.querySelector('#add-icon');
+                    let name_node = document.querySelector('#add-name');
+
+                    let icon = icon_node.value.trim(),
+                        name = name_node.value.trim();
+
+                    if (name && icon) {
+                        icon_node.value = '';
+                        name_node.value = '';
+                        settings_data.settings.favorite.push({ icon: icon, name: name });
+                        renderFavorite();
+                    }
+                });
+
+                renderFavorite();
             });
         }
     }
@@ -84,5 +108,33 @@ define(['app/services/pubg'], function(pubgapi) {
         help_button.addEventListener('click', function(event) {
             eventBus.trigger('requestHelp');
         });
+    }
+
+    function renderFavorite() {
+        let list = document.querySelector('.favorite-list');
+        list.innerHTML = '';
+        if (settings_data && settings_data.settings.favorite) {
+            settings_data.settings.favorite.forEach(f => {
+                let div = document.createElement('div');
+                let image = document.createElement('img');
+                image.src = f.icon;
+                let span = document.createElement('span');
+                span.innerHTML = f.name;
+                let button = document.createElement('button');
+                button.classList.add('reset');
+                button.innerHTML = 'x';
+                button.addEventListener('click', function(event) {
+                    settings_data.settings.favorite.splice(settings_data.settings.favorite.indexOf(f), 1);
+                    renderFavorite();
+                });
+
+                div.appendChild(image)
+                div.appendChild(document.createTextNode(' '));
+                div.appendChild(span);
+                div.appendChild(document.createTextNode(' '));
+                div.appendChild(button);
+                list.appendChild(div);
+            });
+        }
     }
 });

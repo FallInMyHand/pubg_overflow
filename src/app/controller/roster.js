@@ -19,8 +19,8 @@ define(function() {
     function ready() {
         if (window.overwolf) {
             let eventBus = overwolf.windows.getMainWindow().eventBus;
-            eventBus.on('updatedRoster', function(data) {
-                data = data.all;
+            eventBus.on('updatedRoster', function(edata) {
+                data = edata.all;
                 render();
             });
         } else {
