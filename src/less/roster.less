@@ -4,9 +4,7 @@ html, body {
 }
 
 body {
-    //background: #666666;
     font-family: Teko;
-
     &[data-window="roster"] {
         background-color: #868686;
         // need gradient image
@@ -26,6 +24,13 @@ body {
 
         &.transparent {
             background-color: rgba(0,0,0,0.5);
+        }
+
+        &:not(.transparent) {
+            background-image: url(../images/dev/bg.png);
+            background-size: cover;
+            background-position: center;
+
         }
     }
 }

@@ -22,6 +22,11 @@ body[data-window="roster"]::-webkit-scrollbar-thumb {
 body[data-window="roster"].transparent {
   background-color: rgba(0, 0, 0, 0.5);
 }
+body[data-window="roster"]:not(.transparent) {
+  background-image: url(../images/dev/bg.png);
+  background-size: cover;
+  background-position: center;
+}
 .h1-title {
   color: #ffffff;
   display: flex;
