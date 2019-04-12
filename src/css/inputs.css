@@ -172,6 +172,7 @@ button.reset {
 .form-row .form-row-half {
   width: 50%;
   float: left;
+  margin-bottom: 5px;
 }
 .form-label {
   color: #434343;

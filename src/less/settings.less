@@ -6,20 +6,33 @@
 html, body {
     padding: 0;
     margin: 0;
+    height: 100%;
 }
 
 body[data-window="settings"] {
-    background: rgba(128,128,128,1);
+    background-image: url(../images/dev/bg.png);
+    background-size: cover;
+    background-position: center;
+    height: 100%;
     padding: 4px;
+    color: #FFF;
+}
+
+h2 {
+    margin: 0;
+}
+
+hr {
+    border-color: #999;
 }
 
 .form {
-    max-width: 400px;
+    //max-width: 400px;
 }
 
 .part {
     border: 1px solid #a2a2a2;
-    margin: 3px 6px;
+    margin: 3px 0;
     padding: 3px;
     display: none;
 }
@@ -76,9 +89,8 @@ div[data-role="status"] {
 .help {
     font-size: 18px;
     text-align: justify;
-    border: 2px solid #999999;
+    border: 1px solid #999999;
     padding: 2px 6px;
-    color: #434343;
     margin-top: 8px;
 }
 
@@ -108,7 +120,7 @@ div[data-role="status"] {
 }
 
 .title-row {
-    max-width: 400px;
+    padding-top: 5px;
     text-align: right;
     .left {
         float: left;
@@ -121,9 +133,38 @@ div[data-role="status"] {
         clear: both;
     }
     .title {
-        font-size: 24px;
+        font-size: 32px;
         font-weight: 600;
         margin-right: 11px;
         color: #e3e3e3;
+    }
+    .form-label {
+        font-size: 20px;
+        font-weight: 600;
+        margin-right: 11px;
+        color: #e3e3e3;
+    }
+
+    &+hr {
+        margin-top: 0;
+    }
+}
+
+select {
+    height: 36px;
+    border: 2px solid #DDD;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #EEE;
+    padding: 5px 10px 0;
+    font-size: 22px;
+
+    option {
+        border: 2px solid #DDD;
+        border-radius: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #EEE;
+        padding: 5px 10px 0;
+        font-size: 22px;
     }
 }
