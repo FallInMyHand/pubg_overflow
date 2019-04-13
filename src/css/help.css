@@ -6,6 +6,8 @@ body[data-window="help"] {
   background-size: cover;
   background-position: center;
   height: 100%;
+  padding: 4px;
+  box-sizing: border-box;
 }
 .container {
   display: flex;
