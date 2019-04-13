@@ -3,6 +3,10 @@
     100% { transform: rotate(360deg); }
 }
 
+* {
+    box-sizing: border-box;
+}
+
 html, body {
     padding: 0;
     margin: 0;
@@ -29,10 +33,6 @@ h2 {
 
 hr {
     border-color: #999;
-}
-
-.form {
-    //max-width: 400px;
 }
 
 .part {
@@ -155,21 +155,26 @@ div[data-role="status"] {
     }
 }
 
-select {
+.select-wrapper {
+    display: inline-block;
     height: 36px;
     border: 2px solid #DDD;
     border-radius: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    color: #EEE;
-    padding: 5px 10px 0;
-    font-size: 22px;
 
-    option {
-        border: 2px solid #DDD;
-        border-radius: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: #EEE;
-        padding: 5px 10px 0;
+    select {
+        display: block;
+        background-color: transparent;
+        border: 0;
         font-size: 22px;
+
+        option {
+            border: 2px solid #DDD;
+            border-radius: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #EEE;
+            padding: 5px 10px 0;
+            font-size: 22px;
+        }
     }
 }

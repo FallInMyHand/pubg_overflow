@@ -5,6 +5,8 @@ body {
 * {
   font-family: 'Teko', sans-serif;
   font-weight: 100;
+  color: #FFF;
+  box-sizing: border-box;
 }
 :focus {
   outline: none;
@@ -28,7 +30,8 @@ input[type=text] {
   }
 
   &:read-only {
-    color: dodgerblue;
+    background-color: #DDD;
+    color: black;
   }
 }
 
@@ -46,7 +49,8 @@ input[type="number"] {
   }
 
   &:read-only {
-    color: dodgerblue;
+    background-color: #DDD;
+    color: black;
   }
 }
 
@@ -99,9 +103,15 @@ button {
     pointer-events: none;
   }
 
-  &.reset {
-    color: #a91b0d;
-    border-color: #a91b0d;
+  &.reset:hover {
+    border-color: rgb(175, 14, 14);
+    color: red;
+     
+  }
+
+  &.accept {
+    border-color: #2185d0;
+    color: #4babf5;
   }
 }
 
@@ -191,6 +201,8 @@ button {
 }
 
 .form-row {
+  margin-bottom: 3px;
+
   &>* {
     vertical-align: middle;
   }
@@ -199,6 +211,10 @@ button {
     width: 50%;
     float: left;
     margin-bottom: 5px;
+  }
+
+  &.align-right {
+    text-align: right;
   }
 }
 
