@@ -6,6 +6,9 @@
     transform: rotate(360deg);
   }
 }
+* {
+  box-sizing: border-box;
+}
 html,
 body {
   padding: 0;
@@ -13,14 +16,12 @@ body {
   height: 100%;
 }
 body[data-window="settings"] {
-  background-image: url(../images/dev/bg.png);
-  background-size: cover;
-  background-position: center;
   height: 100%;
   padding: 4px;
   background-image: url(../images/dev/bg.png);
   background-size: cover;
   background-position: center;
+  color: #FFF;
 }
 h2 {
   padding: 0;
@@ -130,16 +131,20 @@ div[data-role="status"].error::after {
 .title-row + hr {
   margin-top: 0;
 }
-select {
+.select-wrapper {
+  display: inline-block;
   height: 36px;
   border: 2px solid #DDD;
   border-radius: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  color: #EEE;
-  padding: 5px 10px 0;
+}
+.select-wrapper select {
+  display: block;
+  background-color: transparent;
+  border: 0;
   font-size: 22px;
 }
-select option {
+.select-wrapper select option {
   border: 2px solid #DDD;
   border-radius: 0;
   background-color: rgba(0, 0, 0, 0.5);
