@@ -37,6 +37,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
     function init(evn) {
         events = evn;
+
         window._showStreaks = () => { console.log(streaks); };
         if (window.overwolf) {
             overlay = new Overlay(overwolf, events);
@@ -199,7 +200,10 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             });
 
             events.on('saveSettings', function(data) {
-                console.log('want save this', data);
+                userConfig.settings = data;
+                filesystem.write(`${filesystem.APP_DATA}/config.json`, JSON.stringify(userConfig)).then(() => {
+                    console.log('Setting changed');
+                });
             });
         }
     }
@@ -386,7 +390,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                                             }, 500);
                                         });
                                     }
-                                });
+                                }, 500);
                             }
                         });
                     });

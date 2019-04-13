@@ -100,6 +100,18 @@ div[data-role="status"] {
 }
 
 .favorite-list {
+    height: 120px;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    &>div {
+        font-size: 24px;
+
+        &>* {
+            vertical-align: middle;
+        }
+    }
+
     img {
         width: 24px;
         height: 24px;

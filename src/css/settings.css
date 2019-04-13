@@ -86,6 +86,17 @@ div[data-role="status"].error::after {
   padding: 2px 6px;
   margin-top: 8px;
 }
+.favorite-list {
+  height: 120px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.favorite-list > div {
+  font-size: 24px;
+}
+.favorite-list > div > * {
+  vertical-align: middle;
+}
 .favorite-list img {
   width: 24px;
   height: 24px;

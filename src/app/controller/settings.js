@@ -6,11 +6,10 @@ define(['app/services/pubg'], function(pubgapi) {
     };
 
     function init(events) {
+        initUI();
         if (document.readyState === 'complete') {
-            initUI();
         } else {
             document.addEventListener('DOMContentLoaded', function(event) {
-                initUI();
             });
         }
     }
@@ -75,6 +74,7 @@ define(['app/services/pubg'], function(pubgapi) {
                 let save = document.querySelector('#save');
                 save.addEventListener('click', function(event) {
                     eventBus.trigger('saveSettings', settings_data.settings);
+                    overwolf.windows.close('settings');
                 });
 
                 let close = document.querySelector('#close');
@@ -96,6 +96,20 @@ define(['app/services/pubg'], function(pubgapi) {
                         settings_data.settings.favorite.push({ icon: icon, name: name });
                         renderFavorite();
                     }
+                });
+
+                let ks = document.querySelector('#ks'),
+                    ds = document.querySelector('#ds');
+
+                ks.value = settings_data.settings.ks_amount;
+                ds.value = settings_data.settings.ds_amount;
+
+                ks.addEventListener('change', function() {
+                    settings_data.settings.ks_amount = parseInt(this.value);
+                });
+
+                ds.addEventListener('change', function() {
+                    settings_data.settings.ds_amount = parseInt(this.value);
                 });
 
                 renderFavorite();
