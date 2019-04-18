@@ -3,12 +3,14 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
         processedMatches = null,
         userStat = null;
 
+    const FEATURE_ME = 'me';
     const FEATURE_PHASE = 'phase';
     const FEATURE_ROSTER = 'roster';
     const FEATURE_KILL = 'kill';
     const FEATURE_LOCATION = 'location';
+    const FEATURE_MAP = 'map';
 
-    const REQUIRED_FEATURES = ['me', FEATURE_PHASE, 'map', FEATURE_ROSTER, FEATURE_KILL, 'match', FEATURE_LOCATION];
+    const REQUIRED_FEATURES = [FEATURE_ME, FEATURE_PHASE, FEATURE_MAP, FEATURE_ROSTER, FEATURE_KILL, 'match', FEATURE_LOCATION];
 
     const REGISTER_RETRY_TIMEOUT = 10000;
 
@@ -29,7 +31,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
     let overlay, roster, map;
 
-    const streaks = [];
+    let streaks = [];
 
     return {
         init
@@ -38,8 +40,10 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     function init(evn) {
         events = evn;
 
-        window._showStreaks = () => { console.log(streaks); };
         if (window.overwolf) {
+            window._test = () => {
+                console.log(map.points);
+            };
             overlay = new Overlay(overwolf, events);
             roster = new Roster(overwolf, events);
             map = new Map(overwolf, events);
@@ -148,10 +152,14 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     }
                 } else if (info.feature === FEATURE_LOCATION) {
                     map.moveTo(JSON.parse(info.info.game_info.location));
-                    console.log('location', info);
+                    //console.log('location', info);
+                } else if (info.feature === FEATURE_ME) {
+                    //console.log('me', info); // inVehicle
+                } else if (info.feature === FEATURE_MAP) {
+
                 }
-                if (info.feature !== FEATURE_ROSTER)
-                console.log('all info', info);
+                //if (info.feature !== FEATURE_ROSTER)
+                //console.log('all info', info);
             });
             attachOverwolfEvents();
 
@@ -221,7 +229,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             (async function() {
                 let matches_ids = await pubgapi.getMatcheIds(userConfig.username);
                 matches_ids = matches_ids.filter((d) => { return !processedMatches.matches.find(v => v.id === d)});
-                console.log(matches_ids);
+                streaks = [];
                 if (matches_ids.length > 0) {
                     let accId = userConfig.pubg.accountId;
                     let results = await arrayUtils.asyncForEach(matches_ids.reverse(), (match_id) => {
@@ -243,7 +251,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                                 userStat.players[n].ks++;
                                 userStat.players[n].ds = 0;
                                 if (userStat.players[n].ks >= ks_amount) {
-                                    streaks.push([1, userStat.players[n].ks - ks_amount], n);
+                                    streaks.push([1, userStat.players[n].ks - ks_amount, n]);
                                 }
                             });
                             let killedBy = all.filter(t => t.victim.accountId === accId && t.killer.accountId !== accId);
@@ -267,6 +275,8 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                                 datetime: (new Date()).getTime() / 1000
                             });
 
+                            console.log('cur streak', streaks)
+
                             resolve(Math.random());
                         });
                     });
@@ -276,10 +286,25 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     Promise.all([
                         filesystem.write(`${filesystem.APP_DATA}/processed.${userConfig.pubg.accountId}.json`, JSON.stringify(processedMatches)),
                         filesystem.write(`${filesystem.APP_DATA}/stat.${userConfig.pubg.accountId}.json`, JSON.stringify(userStat))
-                    ], () => {
+                    ]).then(() => {
                         console.log('finished', results);
 
                         end();
+
+                        console.log(results)
+
+                        if (streaks.length > -1) {
+                            console.log('streaks', streaks)
+                            overwolf.windows.obtainDeclaredWindow('statistic', (result) => {
+                                if (result.status === 'success') {
+                                    overwolf.windows.restore('statistic', (result) => {
+                                        setTimeout(() => {
+                                            events.trigger('streaks', streaks);
+                                        }, 500);
+                                    });
+                                }
+                            });
+                        }
                     });
                 } else {
                     database.load(userStat, userConfig.settings);
@@ -378,7 +403,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                                 windows.settings = true;
                                 setTimeout(function() {
                                     if (userConfig) {
-                                        overwolf.windows.changeSize('settings', 400, 700, () => {
+                                        overwolf.windows.changeSize('settings', 400, 600, () => {
                                             setTimeout(() => {
                                                 eventBus.trigger('settings', userConfig);
                                             }, 500);

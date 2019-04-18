@@ -1,0 +1,24 @@
+body {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+#streak-list .streak {
+  line-height: 22px;
+}
+#streak-list .streak > * {
+  vertical-align: middle;
+}
+#streak-list .streak.kill::before,
+#streak-list .streak.death::before {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  content: '';
+  background-size: 22px 22px;
+  vertical-align: middle;
+}
+#streak-list .streak.kill::before {
+  background-image: url("../images/icon/guy_rabbit.svg");
+}
+#streak-list .streak.death::before {
+  background-image: url("../images/icon/guy_bad.svg");
+}

@@ -48,11 +48,15 @@
 			},
 			"statistic": {
 				"file":"windows/statistic.html",
-				"transparent":true,
-				"resizable":false,
+				"transparent": true,
+				"resizable": false,
 				"size":{
 					"width": 400,
 					"height": 300
+				},
+				"start_position": {
+					"left": 320,
+					"top": 200
 				},
 				"in_game_only":true
 			},
@@ -107,8 +111,8 @@
 				"transparent": false,
 				"resizable": true,
 				"size": {
-					"width": 1920,
-					"height": 1080
+					"width": 600,
+					"height": 600
 				},
 				"start_position": {
 					"top": 0,

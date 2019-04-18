@@ -2,23 +2,14 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Background page</title>
-        <script data-main="../../app/statistic" src="../../require.js"></script>
-        <link rel="stylesheet" type="text/css" href="../../css/layout.css">
+        <title>Streaks</title>
+        <script data-main="../../app/start/statistic" src="../../require.js"></script>
+        <link rel="stylesheet" type="text/css" href="../../css/statistic.css">
+        <link href="https://fonts.googleapis.com/css?family=Teko:500" rel="stylesheet">
     </head>
-    <body>
+    <body data-window="statistic">
         <div id="app">
-            <div class="search-box">
-                <input id="player_search" type="text" placeholder="search">
-            </div>
-            <div class="row">
-                <div class="column">
-                    1
-                </div>
-                <div class="column">
-                    2
-                </div>
-            </div>
+            <div id="streak-list"></div>
         </div>
     </body>
 </html>
