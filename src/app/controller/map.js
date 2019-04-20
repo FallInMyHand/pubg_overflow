@@ -25,6 +25,18 @@ define(['d3'], function(d3) {
                 }
             });
         }
+
+        if (document.readyState === 'complete') {
+            initUI();
+        } else {
+            document.addEventListener('DOMContentLoaded', function(event) {
+                initUI();
+            });
+        }
+    }
+
+    function initUI() {
+        document.querySelector('body').classList.remove('loading');
     }
 
     function loadMap(name) {

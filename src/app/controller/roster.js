@@ -87,6 +87,8 @@ define(function() {
                 saveSettings();
             });
         });
+
+        document.querySelector('body').classList.remove('loading');
     }
 
     function saveSettings() {

@@ -212,6 +212,10 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     console.log('Setting changed');
                 });
             });
+
+            events.on('closeWindow', (data) => {
+                windows[data.type] = false;
+            });
         }
     }
 

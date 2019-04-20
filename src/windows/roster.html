@@ -4,22 +4,12 @@
         <meta charset="UTF-8">
         <title>Roster List</title>
         <script data-main="../../app/start/roster" src="../../require.js"></script>
+        <link rel="stylesheet" type="text/css" href="../../css/general.css">
         <link rel="stylesheet" type="text/css" href="../../css/roster.css">
         <link rel="stylesheet" type="text/css" href="../../css/inputs.css">
         <link href="https://fonts.googleapis.com/css?family=Teko:500" rel="stylesheet">
-
-        <script>
-            if (document.location.hostname === 'localhost') {
-                let head = document.querySelector('head');
-                let style = document.createElement('link');
-                style.setAttribute('type', 'text/css');
-                style.setAttribute('href', '../../css/dev.css');
-                style.setAttribute('rel', 'stylesheet');
-                head.appendChild(style);
-            }
-        </script>
     </head>
-    <body data-window="roster">
+    <body data-window="roster" class="loading">
         <div class="h1-title">
             <h1>Roster</h1>
             <div class="filter">

@@ -6,7 +6,7 @@ define(['app/services/pubg'], function(pubgapi) {
     };
 
     function init(events) {
-        initUI();
+        initUIEvents();
         if (document.readyState === 'complete') {
         } else {
             document.addEventListener('DOMContentLoaded', function(event) {
@@ -15,6 +15,10 @@ define(['app/services/pubg'], function(pubgapi) {
     }
 
     function initUI() {
+        document.querySelector('body').classList.remove('loading');
+    }
+
+    function initUIEvents() {
         if (window.overwolf) {
             let eventBus = overwolf.windows.getMainWindow().eventBus;
 
@@ -51,6 +55,7 @@ define(['app/services/pubg'], function(pubgapi) {
                     }
                 });
                 addHelp(eventBus);
+                initUI();
             });
 
             eventBus.on('settings', function(event) {
@@ -79,6 +84,7 @@ define(['app/services/pubg'], function(pubgapi) {
 
                 let close = document.querySelector('#close');
                 close.addEventListener('click', function(event) {
+                    eventBus.trigger('closeWindow', { type: 'settings' });
                     overwolf.windows.close('settings');
                 });
 
@@ -113,6 +119,7 @@ define(['app/services/pubg'], function(pubgapi) {
                 });
 
                 renderFavorite();
+                initUI();
             });
         }
     }

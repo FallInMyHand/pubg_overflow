@@ -45,5 +45,7 @@ define(function() {
         close.addEventListener('click', function(event) {
             overwolf.windows.close('statistic');
         });
+
+        document.querySelector('body').classList.remove('loading');
     }
 })

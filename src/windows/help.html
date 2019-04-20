@@ -4,18 +4,9 @@
         <meta charset="UTF-8">
         <title>Help & News</title>
         <script data-main="../../app/start/help" src="../../require.js"></script>
+        <link rel="stylesheet" type="text/css" href="../../css/general.css">
         <link rel="stylesheet" type="text/css" href="../../css/help.css">
         <link href="https://fonts.googleapis.com/css?family=Teko:500" rel="stylesheet">
-        <script>
-            if (document.location.hostname === 'localhost') {
-                let head = document.querySelector('head');
-                let style = document.createElement('link');
-                style.setAttribute('type', 'text/css');
-                style.setAttribute('href', '../../css/dev.css');
-                style.setAttribute('rel', 'stylesheet');
-                head.appendChild(style);
-            }
-        </script>
     </head>
     <body data-window="help">
         <div class="container">
@@ -41,6 +32,10 @@
                     <div><span>Shift + F3</span> - toggle map</div>
                     -->
                     <div><span>Shift + F4</span> - toggle setting</div>
+                </div>
+                <h2>Settings</h2>
+                <div>
+                    You also can add players to favorite list, if they in game with you - you will know
                 </div>
                 <h2>Troubleshoot</h2>
                 <p>
