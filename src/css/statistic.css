@@ -1,6 +1,14 @@
 body {
   background-color: rgba(0, 0, 0, 0.5);
 }
+.app-bar label {
+  font-size: 36px;
+  text-align: center;
+  margin-left: 36px;
+}
+.app-bar button {
+  float: right;
+}
 #streak-list .streak {
   line-height: 22px;
 }

@@ -13,6 +13,13 @@ define(function() {
             eventBus.on('streaks', (data) => {
                 render(data);
             });
+            if (document.readyState === 'complete') {
+                initUI();
+            } else {
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    initUI();
+                });
+            }
         } else {
             let test =  [
                 [-1, 2, 'Hailrake'],
@@ -30,5 +37,13 @@ define(function() {
         });
 
         document.querySelector('#streak-list').innerHTML = html;
+    }
+
+    function initUI() {
+        console.log('events added')
+        let close = document.querySelector('#close');
+        close.addEventListener('click', function(event) {
+            overwolf.windows.close('statistic');
+        });
     }
 })

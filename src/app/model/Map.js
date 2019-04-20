@@ -1,20 +1,20 @@
 define(['app/utils/events'], function(EventEmitter) {
     class Map {
         constructor(platform, eventBus) {
-            this.points = [[]];
+            this.paths = [{ type: 'foot', points: [] }];
             this.events = new EventEmitter('MapModel');
             this.state -1;
         }
 
         moveTo(point) {
-            if (this.points[this.points.length - 1].length === 0) {
-                this.points[this.points.length - 1].push(point);
+            if (this.paths[this.paths.length - 1].points.length === 0) {
+                this.paths[this.paths.length - 1].points.push(point);
 
                 this.events.trigger('move', { point });
             } else {
-                let last = this.points[this.points.length - 1][this.points[this.points.length - 1].length - 1];
+                let last = this.paths[this.paths.length - 1].points[this.paths[this.paths.length - 1].points.length - 1];
                 if (last.x !== point.x || last.y !== point.y || last.z !== point.z) {
-                    this.points[this.points.length - 1].push(point);
+                    this.paths[this.paths.length - 1].points.push(point);
 
                     this.events.trigger('move', { point });
                 }
@@ -30,7 +30,14 @@ define(['app/utils/events'], function(EventEmitter) {
         }
 
         reset() {
-            this.points = [[]];
+            this.paths = [{ type: 'foot', points: [] }];
+        }
+
+        break(isVehicle) {
+            this.paths.push({
+                type: isVehicle ? 'vehicle' : 'foot',
+                points: []
+            });
         }
     }
 

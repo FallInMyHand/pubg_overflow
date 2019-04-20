@@ -40,6 +40,8 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     function init(evn) {
         events = evn;
 
+        window.test = () => { return map; };
+
         if (window.overwolf) {
             window._test = () => {
                 console.log(map.points);
@@ -71,11 +73,6 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                             favorite: []
                         };
                     }
-
-                    userConfig.settings.favorite = [{
-                        name: 'Hailrake',
-                        icon: 'https://steamuserimages-a.akamaihd.net/ugc/957461211380538862/51D6DE755BF6285BAE9DB34EEB31832EEFE4171D/'
-                    }]
 
                     startApplication();
                 });
@@ -154,7 +151,9 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     map.moveTo(JSON.parse(info.info.game_info.location));
                     //console.log('location', info);
                 } else if (info.feature === FEATURE_ME) {
-                    //console.log('me', info); // inVehicle
+                    console.log('me', info); // inVehicle
+
+                    // map.break(true);
                 } else if (info.feature === FEATURE_MAP) {
 
                 }

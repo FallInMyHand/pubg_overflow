@@ -1,4 +1,4 @@
-define(function() {
+define(['d3'], function(d3) {
     const FEATURE_MAP = 'map';
     const REQUIRED_FEATURES = ['me', FEATURE_MAP, 'match'];
 

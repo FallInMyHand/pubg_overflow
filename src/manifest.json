@@ -3,8 +3,8 @@
 	"type":"WebApp",
 	"meta":{
 		"name": "PUBG Headhunt",
-		"version": "0.2.0",
-		"minimum-overwolf-version": "0.128.0",
+		"version": "0.2.1",
+		"minimum-overwolf-version": "0.127.0",
 		"author": "FallInMyHand",
 		"icon": "logo.png",
 		"icon_gray": "logo_gray.png",
