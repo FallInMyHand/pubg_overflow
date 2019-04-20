@@ -24,6 +24,18 @@ body[data-window="settings"] {
     background-size: cover;
     background-position: center;
     color: #FFF;
+
+    .preloader {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        top: calc(50% - 50px);
+        left: calc(50% - 50px);
+        border: 5px solid rgba(0,0,0,0.2);
+        border-top: 5px solid #FFF;
+        border-radius: 50%;
+        animation: icon-loading 1s linear infinite;
+    }
 }
 
 h2 {
