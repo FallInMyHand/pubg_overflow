@@ -125,7 +125,7 @@
 			"pubgheadhunt_toggle_settings": {
 				"title": "Toggle settings",
 				"action-type": "custom",
-				"default": "Shift+F4"
+				"default": "Shift+F3"
 			}
 		},
 		"extra-objects": {

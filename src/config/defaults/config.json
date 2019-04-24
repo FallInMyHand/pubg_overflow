@@ -4,6 +4,7 @@
         "accountId": null
     },
     "settings": {
+        "show_statistic": true,
         "ks_amount": 2,
         "ds_amount": 2,
         "favorite": []

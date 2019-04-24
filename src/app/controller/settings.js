@@ -88,6 +88,12 @@ define(['app/services/pubg'], function(pubgapi) {
                     overwolf.windows.close('settings');
                 });
 
+                let show_statistic = document.querySelector('#show-statictic');
+                show_statistic.checked = !!settings_data.settings.show_statictic;
+                show_statistic.addEventListener('change', function() {
+                    settings_data.settings.show_statictic = this.checked;
+                });
+
                 let favorite_add = document.querySelector('#favorite-add');
                 favorite_add.addEventListener('click', function() {
                     let icon_node = document.querySelector('#add-icon');
