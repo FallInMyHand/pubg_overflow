@@ -40,7 +40,6 @@ define(function() {
     }
 
     function initUI() {
-        console.log('events added')
         let close = document.querySelector('#close');
         close.addEventListener('click', function(event) {
             overwolf.windows.close('statistic');

@@ -2,7 +2,7 @@ html {
   height: 100%;
 }
 body[data-window="help"] {
-  background-image: url(../images/dev/bg.png);
+  background-image: url(../images/bg.png);
   background-size: cover;
   background-position: center;
   height: 100%;

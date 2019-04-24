@@ -33,7 +33,6 @@
 		"windows": {
 			"background": {
 				"file":"windows/background.html",
-				"resizable": false,
 				"show_in_taskbar": false,
 				"is_background_page": true
 			},
@@ -43,7 +42,11 @@
 				"transparent": true,
 				"size":{
 					"width": 830,
-					"height": 710
+					"height": 510
+				},
+				"start_position": {
+					"left": 320,
+					"top": 200
 				}
 			},
 			"statistic": {
@@ -58,7 +61,7 @@
 					"left": 320,
 					"top": 200
 				},
-				"in_game_only":true
+				"in_game_only": true
 			},
 			"overlay": {
 				"file": "windows/overlay.html",
@@ -80,9 +83,9 @@
 				"file": "windows/settings.html",
 				"transparent": true,
 				"resizable": false,
-				"native_window": true,
 				"show_maximize": false,
 				"show_minimize": false,
+				"draggable": true,
 				"is_alt_f4_blocked": true,
 				"size": {
 					"width": 400,
@@ -104,40 +107,23 @@
 				"start_position": {
 					"top": 150,
 					"left": 20
-				}
-			},
-			"map": {
-				"file": "windows/map.html",
-				"transparent": false,
-				"resizable": true,
-				"size": {
-					"width": 600,
-					"height": 600
 				},
-				"start_position": {
-					"top": 0,
-					"left": 0
-				}
+				"in_game_only": true
 			}
 		},
 		"hotkeys": {
-			"toggle_overlay": {
+			"pubgheadhunt_toggle_overlay": {
 				"title": "Toggle overlay",
 				"action-type": "custom",
 				"default": "Shift+F1"
 			},
-			"toggle_roster": {
+			"pubgheadhunt_toggle_roster": {
 				"title": "Toggle roster window",
 				"action-type": "custom",
 				"default": "Shift+F2"
 			},
-			"toggle_map": {
-				"title": "Show map",
-				"action-type": "custom",
-				"default": "Shift+F3"
-			},
-			"toggle_settings": {
-				"title": "Show settings",
+			"pubgheadhunt_toggle_settings": {
+				"title": "Toggle settings",
 				"action-type": "custom",
 				"default": "Shift+F4"
 			}

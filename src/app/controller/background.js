@@ -1,4 +1,4 @@
-define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDatabase', 'app/model/Overlay', 'app/model/Roster', 'app/model/Map'], function(filesystem, arrayUtils, database, Overlay, Roster, Map) {
+define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDatabase', 'app/model/Overlay', 'app/model/Roster'], function(filesystem, arrayUtils, database, Overlay, Roster) {
     let userConfig = null,
         processedMatches = null,
         userStat = null;
@@ -7,10 +7,10 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     const FEATURE_PHASE = 'phase';
     const FEATURE_ROSTER = 'roster';
     const FEATURE_KILL = 'kill';
-    const FEATURE_LOCATION = 'location';
-    const FEATURE_MAP = 'map';
+    // const FEATURE_LOCATION = 'location';
+    // const FEATURE_MAP = 'map';
 
-    const REQUIRED_FEATURES = [FEATURE_ME, FEATURE_PHASE, FEATURE_MAP, FEATURE_ROSTER, FEATURE_KILL, 'match', FEATURE_LOCATION];
+    const REQUIRED_FEATURES = [FEATURE_ME, FEATURE_PHASE, FEATURE_ROSTER, FEATURE_KILL, 'match'];
 
     const REGISTER_RETRY_TIMEOUT = 10000;
 
@@ -25,11 +25,10 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
         overlay: true,
         roster: false,
         settings: false,
-        map: false,
         help: false
     };
 
-    let overlay, roster, map;
+    let overlay, roster;
 
     let streaks = [];
 
@@ -40,15 +39,9 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     function init(evn) {
         events = evn;
 
-        window.test = () => { return map; };
-
         if (window.overwolf) {
-            window._test = () => {
-                console.log(map.points);
-            };
             overlay = new Overlay(overwolf, events);
             roster = new Roster(overwolf, events);
-            map = new Map(overwolf, events);
 
             let startApplication = () => {
                 const readFiles = [
@@ -94,7 +87,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                         events.trigger('initOverlay', {
                             overlay
                         });
-                    }, 500);
+                    }, 250);
 
                     overlay.hide();
                 });
@@ -104,19 +97,15 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                 if (info.feature === FEATURE_PHASE) {
                     if (info.info.game_info.phase === 'loading_screen') {
                         roster.setState(0);
-                        map.setState(0);
                         events.trigger('startingMatch', {
                             overlay
                         });
                     } else if (info.info.game_info.phase === 'freefly') {
                         roster.setState(1);
-                        map.setState(1);
                     } else if (info.info.game_info.phase === 'lobby') {
                         roster.setState(-1);
-                        map.setState(-1);
                         triggerUpdatedRoster();
                     } else if (info.info.game_info.phase === 'landed') {
-                        map.setState(2);
                     }
                 } else if (info.feature === FEATURE_ROSTER) {
                     let match_info = info.info.match_info;
@@ -147,15 +136,8 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                             overlay.setStat('total_damage_dealt', parseFloat(match_info.total_damage_dealt));
                         }
                     }
-                } else if (info.feature === FEATURE_LOCATION) {
-                    map.moveTo(JSON.parse(info.info.game_info.location));
-                    //console.log('location', info);
                 } else if (info.feature === FEATURE_ME) {
                     console.log('me', info); // inVehicle
-
-                    // map.break(true);
-                } else if (info.feature === FEATURE_MAP) {
-
                 }
                 //if (info.feature !== FEATURE_ROSTER)
                 //console.log('all info', info);
@@ -187,10 +169,6 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                 data.callback(overlay);
             });
 
-            events.on('mapReady', (data) => {
-                data.callback(map);
-            });
-
             events.on('requestHelp', function() {
                 overwolf.windows.obtainDeclaredWindow('help', function(event) {
                     if (event.status === 'success') {
@@ -199,7 +177,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                                 windows.help = true;
                                 setTimeout(() => {
                                     eventBus.trigger('help');
-                                }, 500);
+                                }, 250);
                             }
                         });
                     }
@@ -215,6 +193,12 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
             events.on('closeWindow', (data) => {
                 windows[data.type] = false;
+            });
+
+            overwolf.extensions.onAppLaunchTriggered.addListener(event => {
+                if (event.origin === 'dock') {
+                    events.trigger('requestHelp');
+                }
             });
         }
     }
@@ -294,16 +278,13 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
                         end();
 
-                        console.log(results)
-
-                        if (streaks.length > -1) {
-                            console.log('streaks', streaks)
+                        if (streaks.length > 0) {
                             overwolf.windows.obtainDeclaredWindow('statistic', (result) => {
                                 if (result.status === 'success') {
                                     overwolf.windows.restore('statistic', (result) => {
                                         setTimeout(() => {
                                             events.trigger('streaks', streaks);
-                                        }, 500);
+                                        }, 250);
                                     });
                                 }
                             });
@@ -368,13 +349,13 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     }
 
     function applyHotkeys() {
-        overwolf.settings.registerHotKey('toggle_overlay', (arg) => {
+        overwolf.settings.registerHotKey('pubgheadhunt_toggle_overlay', (arg) => {
             if (arg.status === 'success') {
                 overlay.toggle();
             }
         });
 
-        overwolf.settings.registerHotKey('toggle_roster', (arg) => {
+        overwolf.settings.registerHotKey('pubgheadhunt_toggle_roster', (arg) => {
             if (arg.status === 'success') {
                 if (!windows.roster) {
                     overwolf.windows.obtainDeclaredWindow('roster', (result) => {
@@ -384,7 +365,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                                     windows.roster = true;
                                     setTimeout(() => {
                                         triggerUpdatedRoster();
-                                    }, 500);
+                                    }, 250);
                                 }
                             });
                         }
@@ -397,7 +378,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             }
         });
 
-        overwolf.settings.registerHotKey('toggle_settings', (arg) => {
+        overwolf.settings.registerHotKey('pubgheadhunt_toggle_settings', (arg) => {
             if (arg.status === 'success') {
                 if (!windows.settings) {
                     overwolf.windows.obtainDeclaredWindow('settings', function(event) {
@@ -409,16 +390,16 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                                         overwolf.windows.changeSize('settings', 400, 600, () => {
                                             setTimeout(() => {
                                                 eventBus.trigger('settings', userConfig);
-                                            }, 500);
+                                            }, 250);
                                         });
                                     } else {
                                         overwolf.windows.changeSize('settings', 400, 200, () => {
                                             setTimeout(() => {
                                                 eventBus.trigger('installation');
-                                            }, 500);
+                                            }, 250);
                                         });
                                     }
-                                }, 500);
+                                }, 250);
                             }
                         });
                     });
@@ -429,29 +410,6 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                 }
             }
         });
-
-        overwolf.settings.registerHotKey('toggle_map', (arg) => {
-            if (arg.status === 'success') {
-                if (!windows.map) {
-                    overwolf.windows.obtainDeclaredWindow('map', function(event) {
-                        overwolf.windows.restore('map', function(result) {
-                            if (result.status === 'success') {
-                                windows.map = true;
-                                setTimeout(() => {
-                                    eventBus.trigger('map', {
-                                        map: map
-                                    });
-                                }, 500);
-                            }
-                        });
-                    });
-                } else {
-                    overwolf.windows.close('map', () => {
-                        windows.map = false;
-                    });
-                }
-            }
-        })
     }
 
     function triggerUpdatedRoster() {

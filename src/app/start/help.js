@@ -7,8 +7,7 @@ requirejs.config({
 
 requirejs(['app/utils/events'], function(EventsEmitter) {
     window.eventBus = new EventsEmitter('help');
-
-    if (document.readyState === 'complete') {
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
         initUI();
     } else {
         document.addEventListener('DOMContentLoaded', function(event) {
