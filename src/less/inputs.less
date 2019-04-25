@@ -116,6 +116,7 @@ button {
 }
 
 .checkbox {
+  display: inline-block;
   width: 36px;
   height: 36px;
   position: relative;
@@ -150,8 +151,39 @@ button {
       border-bottom: 2px solid #FFF;
       border-left: 2px solid #FFF;
       transform: rotate(-45deg);
-      top: 8px;
-      left: 7px;
+      top: 7px;
+      left: 5px;
+    }
+  }
+}
+
+input[type=radio] {
+  display: none;
+
+  & + label {
+    display: inline-block;
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(0,0,0,0.5);
+    border: 2px solid #FFF;
+  }
+
+  &:checked {
+    & + label {
+      &::after {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #fff;
+        top: 11px;
+        left: 11px;
+        pointer-events: none;
+      }
     }
   }
 }
