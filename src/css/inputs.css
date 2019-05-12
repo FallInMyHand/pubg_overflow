@@ -99,31 +99,22 @@ button.accept {
   border-color: #2185d0;
   color: #4babf5;
 }
-.checkbox {
-  width: 36px;
-  height: 36px;
+input[type=checkbox] {
+  display: none;
+}
+input[type=checkbox] + label {
+  display: inline-block;
   position: relative;
-}
-.checkbox input[type="checkbox"] {
-  opacity: 0;
-}
-.checkbox input[type="checkbox"]:checked + label::after {
-  content: "";
-}
-.checkbox label {
-  display: block;
   border: 2px solid #EEE;
   background-color: rgba(0, 0, 0, 0.5);
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
+  width: 36px;
+  height: 36px;
   cursor: pointer;
 }
-.checkbox label:hover {
+input[type=checkbox] + label:hover {
   background-color: rgba(0, 0, 0, 0.7);
 }
-.checkbox label::after {
+input[type=checkbox] + label::after {
   content: none;
   display: block;
   position: absolute;
@@ -132,8 +123,35 @@ button.accept {
   border-bottom: 2px solid #FFF;
   border-left: 2px solid #FFF;
   transform: rotate(-45deg);
-  top: 8px;
-  left: 7px;
+  top: 7px;
+  left: 5px;
+}
+input[type=checkbox]:checked + label::after {
+  content: "";
+}
+input[type=radio] {
+  display: none;
+}
+input[type=radio] + label {
+  display: inline-block;
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 2px solid #FFF;
+}
+input[type=radio]:checked + label::after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #fff;
+  top: 11px;
+  left: 11px;
+  pointer-events: none;
 }
 .toggle {
   width: 70px;
