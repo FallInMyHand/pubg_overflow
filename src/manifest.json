@@ -2,8 +2,8 @@
 	"manifest_version": 1,
 	"type":"WebApp",
 	"meta":{
-		"name": "PUBG Headhunt",
-		"version": "0.2.1",
+		"name": "PUBG Headhunt A",
+		"version": "0.2.2",
 		"minimum-overwolf-version": "0.127.0",
 		"author": "FallInMyHand",
 		"icon": "logo.png",
@@ -29,6 +29,7 @@
 			  },
 			  "start_minimized": false
 		}],
+	    "force_browser": "user",
 		"start_window":"background",
 		"windows": {
 			"background": {
@@ -61,6 +62,7 @@
 					"left": 320,
 					"top": 200
 				},
+				"keep_window_location": true,
 				"in_game_only": true
 			},
 			"overlay": {

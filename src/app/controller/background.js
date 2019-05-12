@@ -429,7 +429,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             favorite.push({
                 name: item.name,
                 type: item.type,
-                alive: item.name,
+                alive: item.alive,
                 icon: s.icon
             });
         });
