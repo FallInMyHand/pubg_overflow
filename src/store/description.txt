@@ -1,0 +1,8 @@
+<h3>PUGT Headhunt A</h3>
+<br>
+Features:<br>
+Overlay that group players on 4 categories: unmet, players who kill you 2 times in row, have kills/killed by them but no steak, players killed by you 2 times in row.
+<br>
+Roster list. Nicknames of all player and classefied icon.
+<br>
+Players tracker that will show if expecting players with you in game.
