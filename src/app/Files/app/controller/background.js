@@ -1,4 +1,4 @@
-define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDatabase', 'app/model/Overlay', 'app/model/Roster'], function(filesystem, arrayUtils, database, Overlay, Roster) {
+define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDatabase', 'app/model/Overlay', 'app/model/Roster', 'app/model/Settings', 'app/model/Help'], function(filesystem, arrayUtils, database, Overlay, Roster, Settings, Help) {
     let userConfig = null,
         processedMatches = null,
         userStat = null;
@@ -21,14 +21,7 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
     let events = {};
     let _roster = {}; // to know names for exit as {}
 
-    const windows = {
-        overlay: true,
-        roster: false,
-        settings: false,
-        help: false
-    };
-
-    let overlay, roster;
+    let overlay, roster, settings, help;
 
     let streaks = [];
 
@@ -42,6 +35,8 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
         if (window.overwolf) {
             overlay = new Overlay(overwolf, events);
             roster = new Roster(overwolf, events);
+            settings = new Settings(overwolf, events);
+            help = new Help(overwolf, events);
 
             let startApplication = () => {
                 const readFiles = [
@@ -137,10 +132,10 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                         }
                     }
                 } else if (info.feature === FEATURE_ME) {
-                    console.log('me', info); // inVehicle
+                    // console.log('me', info); // inVehicle
                 }
                 //if (info.feature !== FEATURE_ROSTER)
-                //console.log('all info', info);
+                console.log('all info', info);
             });
             attachOverwolfEvents();
 
@@ -151,17 +146,15 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             });
 
             events.on('resetApp', () => {
-                overwolf.windows.close('settings', (result) => {
-                    if (result.status === 'success') {
-                        resetAppData();
-                        require(['app/controller/installation'], (installation) => {
-                            installation.install().then(function(user) {
-                                userConfig = user;
+                settings.close().then(() => {
+                    resetAppData();
+                    require(['app/controller/installation'], (installation) => {
+                        installation.install().then(function(user) {
+                            userConfig = user;
 
-                                startApplication();
-                            });
+                            startApplication();
                         });
-                    }
+                    });
                 });
             });
 
@@ -172,13 +165,8 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             events.on('requestHelp', function() {
                 overwolf.windows.obtainDeclaredWindow('help', function(event) {
                     if (event.status === 'success') {
-                        overwolf.windows.restore('help', function(result) {
-                            if (result.status === 'success') {
-                                windows.help = true;
-                                setTimeout(() => {
-                                    eventBus.trigger('help');
-                                }, 250);
-                            }
+                        help.show().then(() => {
+                            eventBus.trigger('help');
                         });
                     }
                 });
@@ -187,12 +175,14 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
             events.on('saveSettings', function(data) {
                 userConfig.settings = data;
                 filesystem.write(`${filesystem.APP_DATA}/config.json`, JSON.stringify(userConfig)).then(() => {
-                    console.log('Setting changed');
+                    settings.close();
                 });
             });
 
             events.on('closeWindow', (data) => {
-                windows[data.type] = false;
+                if (data.type === 'settings') {
+                    settings.close();
+                }
             });
 
             overwolf.extensions.onAppLaunchTriggered.addListener(event => {
@@ -357,56 +347,40 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
 
         overwolf.settings.registerHotKey('pubgheadhunt_toggle_roster', (arg) => {
             if (arg.status === 'success') {
-                if (!windows.roster) {
+                if (!roster.isVisible()) {
                     overwolf.windows.obtainDeclaredWindow('roster', (result) => {
                         if (result.status === 'success') {
-                            overwolf.windows.restore('roster', (r) => {
-                                if (r.status === 'success') {
-                                    windows.roster = true;
-                                    setTimeout(() => {
-                                        triggerUpdatedRoster();
-                                    }, 250);
-                                }
+                            roster.show().then(() => {
+                                triggerUpdatedRoster();
                             });
                         }
                     });
                 } else {
-                    overwolf.windows.close('roster', () => {
-                        windows.roster = false;
-                    });
+                    roster.hide();
                 }
             }
         });
 
         overwolf.settings.registerHotKey('pubgheadhunt_toggle_settings', (arg) => {
             if (arg.status === 'success') {
-                if (!windows.settings) {
-                    overwolf.windows.obtainDeclaredWindow('settings', function(event) {
-                        overwolf.windows.restore('settings', function(result) {
-                            if (result.status === 'success') {
-                                windows.settings = true;
-                                setTimeout(function() {
-                                    if (userConfig) {
-                                        overwolf.windows.changeSize('settings', 400, 600, () => {
-                                            setTimeout(() => {
-                                                eventBus.trigger('settings', userConfig);
-                                            }, 250);
-                                        });
-                                    } else {
-                                        overwolf.windows.changeSize('settings', 400, 200, () => {
-                                            setTimeout(() => {
-                                                eventBus.trigger('installation');
-                                            }, 250);
-                                        });
-                                    }
+                if (settings.isVisible()) {
+                    settings.show().then(() => {
+                        if (userConfig) {
+                            overwolf.windows.changeSize('settings', 400, 600, () => {
+                                setTimeout(() => {
+                                    eventBus.trigger('settings', userConfig);
                                 }, 250);
-                            }
-                        });
+                            });
+                        } else {
+                            overwolf.windows.changeSize('settings', 400, 200, () => {
+                                setTimeout(() => {
+                                    eventBus.trigger('installation');
+                                }, 250);
+                            });
+                        }
                     });
                 } else {
-                    overwolf.windows.close('settings', () => {
-                        windows.settings = false;
-                    });
+                    settings.close();
                 }
             }
         });

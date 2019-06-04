@@ -1,6 +1,8 @@
-define(['app/utils/events', 'app/services/playerDatabase'], function(EventsEmitter, database) {
-    class Roster {
+define(['app/utils/events', 'app/model/AbstractWindow', 'app/services/playerDatabase'], function(EventsEmitter, AbstractWindow, database) {
+    class Roster extends AbstractWindow {
         constructor(platform, eventBus) {
+            super('roster', platform, eventBus);
+
             this.state = -1;
             this.lobby = [];
             this.dead = [];

@@ -1,7 +1,8 @@
-define(['app/utils/events'], function(EventsEmitter) {
-    class Overlay {
+define(['app/utils/events', 'app/model/AbstractWindow'], function(EventsEmitter, AbstractWindow) {
+    class Overlay extends AbstractWindow {
         constructor(platform, eventBus) {
-            this.platform = platform;
+            super('overlay', platform, eventBus);
+
             this.events = new EventsEmitter('OverlayModel');
             this._status = true;
             this._current_visible = false;
@@ -12,57 +13,27 @@ define(['app/utils/events'], function(EventsEmitter) {
 
             eventBus.on('startingMatch', () => {
                 this._in_match = true;
-                if (this._status && !this._current_visible) {
-                    this.show().then(() => {
-                        this._current_visible = true;
-                    });
+                if (this._status && !this.isVisible()) {
+                    this.show();
                 }
             });
             eventBus.on('matchEnd', () => {
                 this._in_match = false;
-                if (this._current_visible) {
-                    this.hide().then(() => {
-                        this._current_visible = false;
-                    });
+                if (this.isVisible()) {
+                    this.hide();
                 }
                 this.setStat('total_damage_dealt', 0);
-            });
-        }
-
-        show() {
-            return new Promise((resolve, reject) => {
-                overwolf.windows.restore('overlay', (result) => {
-                    if (result.status === 'success') {
-                        this._current_visible = true;
-                        resolve();
-                    } else {
-                        reject();
-                    }
-                });
-            });
-        }
-
-        hide() {
-            return new Promise((resolve, reject) => {
-                overwolf.windows.hide('overlay', (result) => {
-                    if (result.status === 'success') {
-                        this._current_visible = false;
-                        resolve();
-                    } else {
-                        reject();
-                    }
-                });
             });
         }
 
         toggle() {
             this._status = !this._status;
             if (this._status) {
-                if (this._in_match && !this._current_visible) {
+                if (this._in_match && !this.isVisible()) {
                     this.show();
                 }
             } else {
-                if (this._current_visible) {
+                if (this.isVisible()) {
                     this.hide();
                 }
             }

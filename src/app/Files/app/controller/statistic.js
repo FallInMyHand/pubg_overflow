@@ -13,11 +13,13 @@ define(function() {
             eventBus.on('streaks', (data) => {
                 render(data);
             });
-            if (document.readyState === 'complete') {
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
                 initUI();
+                eventBus.loaded.push('statistic');
             } else {
                 document.addEventListener('DOMContentLoaded', function(event) {
                     initUI();
+                    eventBus.loaded.push('statistic');
                 });
             }
         } else {
@@ -40,6 +42,7 @@ define(function() {
     }
 
     function initUI() {
+        eventBus.trigger('closeWindow', { type: 'settings' });
         let close = document.querySelector('#close');
         close.addEventListener('click', function(event) {
             overwolf.windows.close('statistic');

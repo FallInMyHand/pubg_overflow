@@ -18,6 +18,8 @@ define(function() {
                     initOverlayEvents(overlay);
                 }
             });
+
+            mainEventBus.loaded.push('overlay');
         }
     }
 
