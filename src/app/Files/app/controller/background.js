@@ -124,13 +124,6 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                         }
                     });
                     triggerUpdatedRoster();
-                } else if (info.feature === FEATURE_KILL) {
-                    let match_info = info.info.match_info;
-                    if (match_info.total_damage_dealt !== undefined) {
-                        if (overlay) {
-                            overlay.setStat('total_damage_dealt', parseFloat(match_info.total_damage_dealt));
-                        }
-                    }
                 } else if (info.feature === FEATURE_ME) {
                     // console.log('me', info); // inVehicle
                 }
@@ -317,8 +310,6 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                 events.trigger('matchEnd');
             } else if (event.name === 'matchStart') {
                 game_in_process = true;
-            } else if (event.name === 'damage_dealt') {
-
             } else {
                 console.log('another - event', event);
             }

@@ -8,7 +8,6 @@ define(['app/utils/events', 'app/model/AbstractWindow'], function(EventsEmitter,
             this._current_visible = false;
             this._in_match = false;
             this.stat = {
-                total_damage_dealt: 0
             };
 
             eventBus.on('startingMatch', () => {
@@ -22,7 +21,7 @@ define(['app/utils/events', 'app/model/AbstractWindow'], function(EventsEmitter,
                 if (this.isVisible()) {
                     this.hide();
                 }
-                this.setStat('total_damage_dealt', 0);
+                // this.setStat('total_damage_dealt', 0);
             });
         }
 
@@ -42,12 +41,14 @@ define(['app/utils/events', 'app/model/AbstractWindow'], function(EventsEmitter,
         setStat(key, value) {
             this.stat[key] = value;
 
+            /*
             if (key === 'total_damage_dealt') {
                 this.events.trigger('statChanged', {
                     key,
                     value: Math.floor(value)
                 });
             }
+            */
         }
     }
 
