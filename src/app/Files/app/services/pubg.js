@@ -31,11 +31,15 @@ define(['app/utils/ajax'], function(ajax) {
 
     async function getMatchAsset(match_id) {
         return new Promise(async function(resolve, reject) {
-            let result = JSON.parse(await ajax(`${match_url}/${match_id}`, { method: 'GET', headers: { accept: 'application/vnd.api+json' } }));
-            let asset = result.included.find((d) => d.type === 'asset');
-            if (asset) {
-                resolve(asset);
-            } else {
+            try {
+                let result = JSON.parse(await ajax(`${match_url}/${match_id}`, { method: 'GET', headers: { accept: 'application/vnd.api+json' } }));
+                let asset = result.included.find((d) => d.type === 'asset');
+                if (asset) {
+                    resolve(asset);
+                } else {
+                    reject();
+                }
+            } catch(e) {
                 reject();
             }
         });
@@ -43,10 +47,14 @@ define(['app/utils/ajax'], function(ajax) {
 
     async function getTelemetry(url) {
         return new Promise(async function(resolve, reject) {
-            let result = JSON.parse(await ajax(url, { method: 'GET', headers: { accept: 'application/vnd.api+json' } }));
-            if (result) {
-                resolve(result);
-            } else {
+            try {
+                let result = JSON.parse(await ajax(url, { method: 'GET', headers: { accept: 'application/vnd.api+json' } }));
+                if (result) {
+                    resolve(result);
+                } else {
+                    reject();
+                }
+            } catch(e) {
                 reject();
             }
         });
@@ -54,16 +62,20 @@ define(['app/utils/ajax'], function(ajax) {
 
     async function getMatcheIds(user_name) {
         return new Promise(async function(resolve, reject) {
-            let result = JSON.parse(await ajax(`${proxy_url}/players?filter[playerNames]=${user_name}`, { method: 'GET' }));
-            if (result.data && Array.isArray(result.data) && result.data.length > 0) {
-                let matches = result.data[0].relationships.matches.data;
+            try {
+                let result = JSON.parse(await ajax(`${proxy_url}/players?filter[playerNames]=${user_name}`, { method: 'GET' }));
+                if (result.data && Array.isArray(result.data) && result.data.length > 0) {
+                    let matches = result.data[0].relationships.matches.data;
 
-                if (matches.length > 0) {
-                    resolve(matches.map(m => m.id));
+                    if (matches.length > 0) {
+                        resolve(matches.map(m => m.id));
+                    } else {
+                        reject();
+                    }
                 } else {
                     reject();
                 }
-            } else {
+            } catch(e) {
                 reject();
             }
         });

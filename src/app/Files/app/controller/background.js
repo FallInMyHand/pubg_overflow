@@ -204,50 +204,54 @@ define(['app/services/filesystem', 'app/utils/array', 'app/services/playerDataba
                     let accId = userConfig.pubg.accountId;
                     let results = await arrayUtils.asyncForEach(matches_ids.reverse(), (match_id) => {
                         return new Promise(async (resolve, reject) => {
-                            let asset = await pubgapi.getMatchAsset(match_id);
-                            let telemetry = await pubgapi.getTelemetry(asset.attributes.URL);
+                            try {
+                                let asset = await pubgapi.getMatchAsset(match_id);
+                                let telemetry = await pubgapi.getTelemetry(asset.attributes.URL);
 
-                            let all = telemetry.filter(t => t._T === 'LogPlayerKill');
-                            let ks_amount = userConfig.settings.ks_amount,
-                                ds_amount = userConfig.settings.ds_amount;
+                                let all = telemetry.filter(t => t._T === 'LogPlayerKill');
+                                let ks_amount = userConfig.settings.ks_amount,
+                                    ds_amount = userConfig.settings.ds_amount;
 
-                            let killed = all.filter(t => t.killer.accountId === accId && t.victim.accountId !== accId);
-                            killed.forEach((kill_log) => {
-                                let n = kill_log.victim.name;
-                                if (!userStat.players[n]) {
-                                    userStat.players[n] = empty_stat_log();
-                                }
-                                userStat.players[n].k++;
-                                userStat.players[n].ks++;
-                                userStat.players[n].ds = 0;
-                                if (userStat.players[n].ks >= ks_amount) {
-                                    streaks.push([1, userStat.players[n].ks - ks_amount, n]);
-                                }
-                            });
-                            let killedBy = all.filter(t => t.victim.accountId === accId && t.killer.accountId !== accId);
-                            killedBy.forEach((death_log) => {
-                                let n = death_log.killer.name;
-                                if (!userStat.players[n]) {
-                                    userStat.players[n] = empty_stat_log();
-                                }
-                                // check death streak
-                                userStat.players[n].d++;
-                                userStat.players[n].ds++;
-                                userStat.players[n].ks = 0;
+                                let killed = all.filter(t => (t.killer && t.killer.accountId === accId) && t.victim.accountId !== accId);
+                                killed.forEach((kill_log) => {
+                                    let n = kill_log.victim.name;
+                                    if (!userStat.players[n]) {
+                                        userStat.players[n] = empty_stat_log();
+                                    }
+                                    userStat.players[n].k++;
+                                    userStat.players[n].ks++;
+                                    userStat.players[n].ds = 0;
+                                    if (userStat.players[n].ks >= ks_amount) {
+                                        streaks.push([1, userStat.players[n].ks - ks_amount, n]);
+                                    }
+                                });
+                                let killedBy = all.filter(t => t.victim.accountId === accId && (t.killer && t.killer.accountId !== accId));
+                                killedBy.forEach((death_log) => {
+                                    let n = death_log.killer.name;
+                                    if (!userStat.players[n]) {
+                                        userStat.players[n] = empty_stat_log();
+                                    }
+                                    // check death streak
+                                    userStat.players[n].d++;
+                                    userStat.players[n].ds++;
+                                    userStat.players[n].ks = 0;
 
-                                if (userStat.players[n].ds >= ds_amount) {
-                                    streaks.push([-1, userStat.players[n].ds - ds_amount, n]);
-                                }
-                            });
+                                    if (userStat.players[n].ds >= ds_amount) {
+                                        streaks.push([-1, userStat.players[n].ds - ds_amount, n]);
+                                    }
+                                });
 
-                            processedMatches.matches.push({
-                                id: match_id,
-                                datetime: (new Date()).getTime() / 1000
-                            });
+                                processedMatches.matches.push({
+                                    id: match_id,
+                                    datetime: (new Date()).getTime() / 1000
+                                });
 
-                            console.log('cur streak', streaks)
+                                console.log('cur streak', streaks)
 
-                            resolve(Math.random());
+                                resolve(Math.random());
+                            } catch(e) {
+                                resolve();
+                            }
                         });
                     });
 
